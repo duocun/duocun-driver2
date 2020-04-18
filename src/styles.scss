@@ -30,6 +30,10 @@ $footer-height: 60px;
 }
 a[href^="https://maps.google.com/maps"]{display:none !important}
 
+.mat-tab-body-wrapper{
+  height: 100%;
+}
+
 // .selected{
 //     display:block;
 // }
@@ -334,7 +338,6 @@ body{
   // margin-top:$navbar-height;
   margin: 0px;
   padding: 0px;
-  min-height: 560px;
 
   .row{
     margin: 0px;

@@ -1,14 +1,11 @@
 <div class="page">
-  <div class="title-row">
-    <span class="title-bg" i18n="@@MyOrder">My Order</span>
-  </div>
   <div class="content">
     <!-- <div class="deliver-time">
         <span i18n="@@PickupTime">Pickup Time</span>
       </div> -->
     <!-- <mat-tab-group mat-align-tabs="center">
       <mat-tab label="{{phase.pickup}}" *ngFor="let phase of phases"> -->
-        <div class="row date-input-block">
+        <div class="date-input-block">
           <form [formGroup]="dateForm">
             <input class="date-input" matInput [matDatepicker]="picker" i18n-placeholder placeholder="Choose a date"
               [formControl]="date"

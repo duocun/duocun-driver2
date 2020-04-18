@@ -3,7 +3,7 @@ import { Subject } from '../../../../node_modules/rxjs';
 import { takeUntil } from '../../../../node_modules/rxjs/operators';
 import * as moment from 'moment';
 import { IMerchant, MerchantType, MerchantStatus } from '../../restaurant/restaurant.model';
-import { OrderStatus, IOrder, IOrderItem } from '../order.model';
+import { OrderStatus, IOrder, IOrderItem, OrderType } from '../order.model';
 import { MerchantService } from '../../restaurant/restaurant.service';
 import { AccountService } from '../../account/account.service';
 import { OrderService } from '../order.service';
@@ -11,6 +11,12 @@ import { Router } from '../../../../node_modules/@angular/router';
 import { ILocation } from '../../location/location.model';
 import { SharedService } from '../../shared/shared.service';
 import { LocationService } from '../../location/location.service';
+import { FormBuilder } from '../../../../node_modules/@angular/forms';
+import { NgRedux } from '../../../../node_modules/@angular-redux/store';
+import { IAppState } from '../../store';
+import { IDelivery } from '../../delivery/delivery.model';
+import { MatDatepickerInputEvent } from '../../../../node_modules/@angular/material';
+import { PaymentMethod } from '../../payment/payment.model';
 
 export const DriverStatus = {
   ACTIVE: 'A',
@@ -32,6 +38,14 @@ export class PickupPageComponent implements OnInit, OnDestroy {
   groups;
   pickup = '11:20';
 
+  dateForm;
+  deliverDate;
+  deliverTime;
+  productGroups;
+
+  PaymentMethod = PaymentMethod;
+  Status = OrderStatus;
+
   constructor(
     private merchantSvc: MerchantService,
     private accountSvc: AccountService,
@@ -39,19 +53,39 @@ export class PickupPageComponent implements OnInit, OnDestroy {
     private sharedSvc: SharedService,
     private locationSvc: LocationService,
     private router: Router,
+    private fb: FormBuilder,
+    private rx: NgRedux<IAppState>
     // private snackBar: MatSnackBar
   ) {
+    this.dateForm = this.fb.group({ date: [''] });
 
+    this.rx.select<IDelivery>('delivery').pipe(takeUntil(this.onDestroy$)).subscribe((d: IDelivery) => {
+      this.deliverDate = d.deliverDate;
+      this.deliverTime = d.deliverTime;
+
+      const dt = moment(this.deliverDate + 'T' + this.deliverTime + ':00.000Z');
+      this.date.setValue(dt);
+    });
   }
 
+  get date() { return this.dateForm.get('date'); }
+
   ngOnInit() {
-    this.mount().then((account) => {
+    this.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe(account => {
       if (account) {
-        this.groups = this.groupByMerchants(this.orders);
+        this.account = account;
+        this.mount(this.deliverDate, this.deliverTime).then(() => {
+          // if (account) {
+          // this.groups = this.groupByMerchants(this.orders);
+          // } else {
+          //   this.router.navigate(['account/setting'], { queryParams: { merchant: false } }); // fix me
+          // }
+        });
       } else {
-        this.router.navigate(['account/setting'], { queryParams: { merchant: false } }); // fix me
+        this.router.navigate(['account/login']);
       }
     });
+
   }
 
   ngOnDestroy() {
@@ -67,66 +101,72 @@ export class PickupPageComponent implements OnInit, OnDestroy {
   //   });
   // }
 
-  mount() {
+  mount(deliverDate, deliverTime) {
     const self = this;
-    const pickupTime = this.pickup;
     // tslint:disable-next-line:no-shadowed-variable
-    return new Promise((resolve, reject) => {
-      // const status = DriverStatus.ACTIVE;
-      this.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe(account => {
-        self.account = account;
-
-        if (account) {
-          const q = { status: MerchantStatus.ACTIVE, type: { $in: [MerchantType.RESTAURANT, MerchantType.GROCERY] } };
-          self.merchantSvc.quickFind(q).pipe(takeUntil(this.onDestroy$)).subscribe((rs: IMerchant[]) => {
-            self.merchants = rs;
-
-            const sDate = moment().format('YYYY-MM-DD');
-            const start = moment(sDate).toISOString();
-            const end = moment(sDate).add(1, 'days').toISOString();
-            const dateRange = { $gt: start, $lt: end };
-            const driverId = account._id;
-            const qOrder = {
-              pickupTime,
-              driverId,
-              delivered: dateRange,
-              status: { $nin: [OrderStatus.BAD, OrderStatus.DELETED, OrderStatus.TEMP] }
-            };
-            this.orderSvc.find(qOrder).pipe(takeUntil(this.onDestroy$)).subscribe((orders: IOrder[]) => {
-              this.orders = [...orders];
-              this.pickups = this.getPickupList();
-              resolve(account);
-            });
-          });
-        } else { // not authorized for opreration merchant
+    return new Promise((resolve) => {
+      const q = { status: MerchantStatus.ACTIVE, type: { $in: [MerchantType.RESTAURANT, MerchantType.GROCERY] } };
+      this.merchantSvc.quickFind(q).pipe(takeUntil(this.onDestroy$)).subscribe((rs: IMerchant[]) => {
+        this.reload(deliverDate, deliverTime).then((r: any) => {
+          // update view
+          self.merchants = rs;
+          this.groups = r.groups;
+          this.orders = r.orders;
+          this.productGroups = r.productGroups;
+          // this.pickups = this.getPickupList();
           resolve();
-        }
+        });
       });
     });
   }
 
   // reload only changable datas
-  reload(pickupTime) {
+  reload(deliverDate, deliverTime) {
     return new Promise((resolve, reject) => {
-      const sDate = moment().format('YYYY-MM-DD');
-      const start = moment(sDate).toISOString();
-      const end = moment(sDate).add(1, 'days').toISOString();
-      const dateRange = { $gt: start, $lt: end };
       const driverId = this.account._id;
       const qOrder = {
-        driverId,
-        pickupTime,
-        delivered: dateRange,
+        driverId, deliverDate, deliverTime,
         status: { $nin: [OrderStatus.BAD, OrderStatus.DELETED, OrderStatus.TEMP] }
       };
       this.orderSvc.find(qOrder).pipe(takeUntil(this.onDestroy$)).subscribe((orders: IOrder[]) => {
         this.orders = [...orders];
-        return resolve(orders);
+        // self.loading = false;
+        const groups = this.groupByMerchants(orders);
+        const productGroups = this.groupByProduct(OrderType.GROCERY, orders);
+
+        resolve({ orders, groups, productGroups });
       });
     });
   }
 
+  groupByProduct(type, orders) {
+    const productMap = {};
+    const rs = orders.filter(order => order.type === type);
+    rs.map(r => {
+      r.items.map(it => {
+        productMap[it.productId] = { productName: it.product.name, quantity: 0 };
+      });
+    });
+    rs.map(r => {
+      r.items.map(it => {
+        productMap[it.productId].quantity += it.quantity;
+      });
+    });
 
+    return Object.keys(productMap).map(pId => productMap[pId]);
+  }
+
+  onDateChange(type: string, event: MatDatepickerInputEvent<Date>) {
+    this.deliverDate = moment(event.value).format('YYYY-MM-DD');
+    const date = moment(event.value).set({ hour: 10, minute: 0, second: 0, millisecond: 0 });
+    this.date.setValue(date);
+
+    this.reload(this.deliverDate, this.deliverTime).then((r: any) => {
+      this.groups = r.groups;
+      this.orders = r.orders;
+      this.productGroups = r.productGroups;
+    });
+  }
 
   // pickupTime --- eg. '11:20'
   // reload(accounts: IAccount[], pickupTime: string) {
@@ -156,23 +196,14 @@ export class PickupPageComponent implements OnInit, OnDestroy {
 
   // return array of {merchantId: x, merchantName: x, items: [{order:x, status: x}, ... ]}
   groupByMerchants(orders: IOrder[]) {
-    const groupedByMerchants = [];
+    const merchantMap = {};
     orders.map(order => {
-      const grp = groupedByMerchants.find(m => m.merchantId === order.merchantId);
-      // const account = accounts.find(a => a._id === order.clientId);
-      // const balance = account ? account.balance : 0;
-      // if (!account) {
-      //   console.log(order.clientId);
-      // }
-
-      if (!grp) {
-        const item = { order, code: order.code, status: order.status, isPicked: this.isPicked(order) };
-        groupedByMerchants.push({ merchantId: order.merchantId, merchantName: order.merchantName, items: [item] });
-      } else {
-        grp.items.push({ order, code: order.code, status: order.status, isPicked: this.isPicked(order) });
-      }
+      merchantMap[order.merchantId] = { merchantName: order.merchantName, items: [] };
     });
-    return groupedByMerchants;
+    orders.map(order => {
+      merchantMap[order.merchantId].items.push({ order, status: order.status, isPicked: this.isPicked(order) });
+    });
+    return Object.keys(merchantMap).map(mId => merchantMap[mId]);
   }
 
   isPicked(order: IOrder) {
@@ -232,18 +263,27 @@ export class PickupPageComponent implements OnInit, OnDestroy {
   //   });
   //   return groupedOrders;
   // }
-
+  getProductCssClass(item) {
+    if (item && item.product && item.product.categoryId === '5cbc5df61f85de03fd9e1f12') {
+      return 'beverage';
+    } else {
+      return 'product';
+    }
+  }
   onSelectPickup(e) {
     this.pickup = e.value;
-    this.reload(this.pickup).then((orders: IOrder[]) => {
-      this.orders = orders;
-      this.groups = this.groupByMerchants(this.orders);
-      // let list;
-      // if (this.pickup === '所有订单') {
-      //   list = orders;
-      // } else {
-      //   list = this.orders.filter(order => order.pickupTime === this.pickup);
-      // }
+    this.reload(this.deliverDate, this.deliverTime).then((r: any) => {
+      this.groups = r.groups;
+      this.orders = r.orders;
+      this.productGroups = r.productGroups;
     });
+  }
+
+  allowReceivablesBlock(it) {
+    if (it.order.paymentMethod === PaymentMethod.CASH || (it.balance >= 0 && it.status !== OrderStatus.DONE)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

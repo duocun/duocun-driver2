@@ -5,19 +5,18 @@ import { accountReducer } from './account/account.reducer';
 import { locationReducer } from './location/location.reducer';
 import { ILocation } from './location/location.model';
 // import { IPicture, DEFAULT_PICTURE } from './commerce/commerce.actions';
-import { pageReducer } from './main/main.reducers';
+import { pageReducer, DEFAULT_PAGE } from './main/main.reducers';
 import { commandReducer, ICommand } from './shared/command.reducers';
 import { DEFAULT_MALL } from './mall/mall.actions';
 import { IMall } from './mall/mall.model';
 import { mallReducer } from './mall/mall.reducers';
 import { IDelivery } from './delivery/delivery.model';
-import { deliveryReducer } from './delivery/delivery.reducer';
+import { deliveryReducer, DEFAULT_DELIVERY } from './delivery/delivery.reducer';
 import { IContact } from './contact/contact.model';
 import { contactReducer } from './contact/contact.reducer';
 import { restaurantReducer } from './restaurant/restaurant.reducer';
 import { IMerchant } from './restaurant/restaurant.model';
 import { Account } from './account/account.model';
-import { deliveryTimeReducer } from './delivery/delivery-time.reducer';
 
 export interface IAppState {
     account: Account;
@@ -36,12 +35,12 @@ export const INITIAL_STATE: IAppState = {
     account: null,
     // picture: DEFAULT_PICTURE,
     location: null,
-    page: 'home',
+    page: DEFAULT_PAGE,
     cmd: {name: '', args: ''},
     // deliveryTime: {text: '', from: null, to: null},
     restaurant: null,
     malls: [DEFAULT_MALL],
-    delivery: null,
+    delivery: DEFAULT_DELIVERY,
     contact: null,
 };
 

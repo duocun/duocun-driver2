@@ -33,7 +33,7 @@ export class CartPageComponent implements OnInit, OnDestroy {
     private sharedSvc: SharedService
   ) {
     this.rx.dispatch({
-      type: PageActions.UPDATE_URL,
+      type: PageActions.SET_PAGE,
       payload: 'cart'
     });
   }

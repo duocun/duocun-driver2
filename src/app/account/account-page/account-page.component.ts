@@ -46,7 +46,7 @@ export class AccountPageComponent implements OnInit, OnDestroy {
   ) {
     const self = this;
     this.rx.dispatch({
-      type: PageActions.UPDATE_URL,
+      type: PageActions.SET_PAGE,
       payload: 'account-setting'
     });
 

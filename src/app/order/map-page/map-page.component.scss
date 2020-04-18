@@ -1,3 +1,16 @@
+@import '../../base';
+
+
+mat-tab-group{
+  height: calc(100% - #{$bottom-bar-h});
+}
+
+
+
 .map-block{
-  height: 520px;
+  height: 100%;
+}
+
+@media (max-width:480px) {
+
 }

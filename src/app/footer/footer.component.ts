@@ -54,6 +54,10 @@ export class FooterComponent implements OnInit, OnDestroy {
     this.rx.select('location').pipe(takeUntil(this.onDestroy$)).subscribe((loc: ILocation) => {
       self.location = loc;
     });
+
+    this.rx.select('page').pipe(takeUntil(this.onDestroy$)).subscribe((page) => {
+      self.selected = page;
+    });
   }
 
   ngOnInit() {
@@ -69,15 +73,6 @@ export class FooterComponent implements OnInit, OnDestroy {
     // .fill{
     //   color: '#F4B400'; // '#0F9D58' // green
     // }
-  }
-
-  toHome() {
-    this.selected = 'home';
-    if (this.account) {
-      this.router.navigate(['order/pickup']);
-    } else {
-      this.router.navigate(['account/login']);
-    }
   }
 
   toDeliver() {
