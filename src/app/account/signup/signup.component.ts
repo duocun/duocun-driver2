@@ -35,7 +35,7 @@ export class SignupComponent implements OnInit {
 
   ngOnInit() {
     this.rx.dispatch({
-      type: PageActions.UPDATE_URL,
+      type: PageActions.SET_PAGE,
       payload: 'login'
     });
   }

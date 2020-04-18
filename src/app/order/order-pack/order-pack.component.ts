@@ -62,7 +62,6 @@ export class OrderPackComponent implements OnInit, OnDestroy, OnChanges {
   ngOnInit() {
     const self = this;
 
-    // why ??
     this.rx.select<ICommand>('cmd').pipe(takeUntil(this.onDestroy$)).subscribe((x: ICommand) => {
       if (x.name === 'reload-orders') {
         const q = { _id: { $in: self.clientIds } };
@@ -104,10 +103,8 @@ export class OrderPackComponent implements OnInit, OnDestroy, OnChanges {
   ngOnChanges(v) {
     const self = this;
     if (v.deliverDate && v.deliverDate.currentValue) {
-
-
       self.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe(account => {
-
+        this.account = account;
         self.reload(this.pickupTime, this.deliverDate).then((r: any) => {
           self.clientIds = this.sharedSvc.getDistinctValues(r.orders, 'clientId');
           // if (self.clientIds && self.clientIds.length > 0) {
@@ -210,8 +207,7 @@ reload(pickupTime: string, deliverDate: string) {
       });
 
       const groups = Object.keys(merchantMap).map(mId => merchantMap[mId]);
-      // items: [{order:x, status: x},
-      // self.groups = this.groupByMerchants(accounts, orders);
+
       const productGroups = this.groupByProduct(OrderType.GROCERY, orders);
 
       resolve({orders, groups, productGroups});
@@ -234,19 +230,6 @@ groupByProduct(type, orders) {
   });
 
   return Object.keys(productMap).map(pId => productMap[pId]);
-
-  // const groups = [];
-  // rs.map(order => {
-  //   order.items.map(it => {
-  //     const group = groups.find(g => g.productId === it.productId);
-  //     if (group) {
-  //       group.quantity += it.quantity;
-  //     } else {
-  //       groups.push({ productId: it.productId, productName: it.product.name, quantity: it.quantity });
-  //     }
-  //   });
-  // });
-  // return groups;
 }
 
 

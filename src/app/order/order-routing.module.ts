@@ -10,7 +10,7 @@ import { PackagePageComponent } from './package-page/package-page.component';
 const routes: Routes = [
   { path: 'history', component: OrderHistoryComponent },
   { path: 'summary', component: SummaryPageComponent },
-  { path: 'pickup', component: PackagePageComponent },
+  { path: 'pickup', component: PickupPageComponent },
   { path: 'settlement', component: SettlementPageComponent },
   { path: 'map', component: MapPageComponent}
 ];

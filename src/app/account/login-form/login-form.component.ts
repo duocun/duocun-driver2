@@ -48,7 +48,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.rx.dispatch({
-      type: PageActions.UPDATE_URL,
+      type: PageActions.SET_PAGE,
       payload: 'login'
     });
   }
@@ -70,6 +70,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
               self.rx.dispatch({ type: AccountActions.UPDATE, payload: account }); // update header, footer icons
               const roles = account.roles;
               if (roles && roles.length > 0 && roles.indexOf(Role.DRIVER) !== -1) {
+                this.rx.dispatch({ type: PageActions.SET_PAGE, payload: 'pickup'});
                 this.router.navigate(['order/pickup']);
               } else {
                 this.router.navigate(['account/login']);

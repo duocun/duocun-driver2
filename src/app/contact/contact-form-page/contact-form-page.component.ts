@@ -21,8 +21,6 @@ import { PageActions } from '../../main/main.actions';
 import { IDeliveryTime } from '../../delivery/delivery.model';
 import { CommandActions } from '../../shared/command.actions';
 import * as Cookies from 'js-cookie';
-import { IDeliveryTimeAction } from '../../delivery/delivery-time.reducer';
-import { DeliveryTimeActions } from '../../delivery/delivery-time.actions';
 
 @Component({
   selector: 'app-contact-form-page',
@@ -59,7 +57,7 @@ export class ContactFormPageComponent implements OnInit, OnDestroy {
     });
 
     this.rx.dispatch({
-      type: PageActions.UPDATE_URL,
+      type: PageActions.SET_PAGE,
       payload: 'contact-form'
     });
   }
@@ -89,11 +87,11 @@ export class ContactFormPageComponent implements OnInit, OnDestroy {
     this.rx.select('deliveryTime').pipe(
       takeUntil(this.onDestroy$)
     ).subscribe((t: IDeliveryTime) => {
-      if (!this.oldDeliveryTime) {
-        this.oldDeliveryTime = t;
-        Cookies.set('duocun-old-delivery-time', JSON.stringify(t));
-      }
-      this.deliveryTime = t;
+      // if (!this.oldDeliveryTime) {
+      //   this.oldDeliveryTime = t;
+      //   Cookies.set('duocun-old-delivery-time', JSON.stringify(t));
+      // }
+      // this.deliveryTime = t;
     });
   }
 
@@ -199,13 +197,13 @@ export class ContactFormPageComponent implements OnInit, OnDestroy {
   }
 
   cancel() {
-    const self = this;
-    this.rx.dispatch<IDeliveryTimeAction>({
-      type: DeliveryTimeActions.UPDATE,
-      payload: this.oldDeliveryTime
-    });
-    Cookies.remove('duocun-old-delivery-time');
-    self.router.navigate(['contact/list']);
+    // const self = this;
+    // this.rx.dispatch<IDeliveryTimeAction>({
+    //   type: DeliveryTimeActions.UPDATE,
+    //   payload: this.oldDeliveryTime
+    // });
+    // Cookies.remove('duocun-old-delivery-time');
+    // self.router.navigate(['contact/list']);
   }
 
   getContact() {

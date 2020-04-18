@@ -1,20 +1,61 @@
 @import '../../base';
 
+$date-btn-w: 50px;
+$label-w: 65px;
+
+.page-body{
+  top: 0px;
+}
+
+.date-input-block{
+  width: 100%;
+  height: 50px;
+  margin: 0px;
+  padding: 10px 10px 0px 10px;
+
+  form{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+
+    input.date-input{
+      width: calc(100% - #{$date-btn-w});
+      margin-bottom: 10px;
+      float: left;
+    }
+
+    mat-datepicker-toggle{
+      width: $date-btn-w;
+      height: $input-h;
+      float: left;
+    }
+  }
+}
+
+.list{
+  height: 100%;
+  overflow-y: scroll;
+}
+
+.order-list{
+  height: 100%;
+  margin-top: 0px;
+}
+
 .pickup-row{
   padding: 10px;
 }
 
 .merchant-block{
-  padding-top: 8px;
+  padding-top: 0px;
   padding-bottom: 8px;
-  border-top: 1px solid #aaa;
-  margin-top: 10px;
 }
 
 .order{
-  border-bottom: solid 1px #eee;
   padding: 0px 0px 10px 0px;
-
+  .label{
+    width: $label-w;
+  }
   .note-row, .order-id-row, .client-row, .phonenum-row, .address-row, .navigate-row{
     font-size: 12px;
     .col-3 {
@@ -53,7 +94,6 @@
     .quantity-col{
       padding-left: 5px;
     }
-
     .phonenum-row{
       a{
         font-size: 14px;
@@ -72,7 +112,6 @@
   }
 }
 
-$lable-width: 50px;
 
 .order-header{
   width: 100%;
@@ -83,7 +122,7 @@ $lable-width: 50px;
     width: 100%;
     font-size: 12px;
     font-weight: 400;
-    padding-left: 0px;
+    padding-left: 2px;
   }
 
   .warning{
@@ -96,20 +135,27 @@ $lable-width: 50px;
   
   .code-col, .client-col, .quantity-col, .status-col, .note-col{
     float: left;
-    width: 50%;
     padding: 0px;
 
     .label {
       float: left;
       padding: 0px;
-      width: $lable-width;
+      width: $label-w;
     }
     .text {
       float: left;
       padding-left: 0px;
       padding-right: 0px;
-      width: calc(100% - #{$lable-width});
+      width: calc(100% - #{$label-w});
     }
+  }
+
+  .code-col, .client-col{
+    width: 75%;
+  }
+
+  .status-col, .quantity-col{
+    width: 25%;
   }
 
   .note-col{
@@ -238,4 +284,11 @@ $header-height: 90px;
   width: 88% !important;
   height: 70%;
   max-width: none !important;
+}
+
+.summary{
+  margin-top: 15px;
+  .title{
+    padding-bottom: 6px;
+  }
 }
