@@ -13,7 +13,6 @@ import { OrderRoutingModule } from './order-routing.module';
 import { MerchantService } from '../restaurant/restaurant.service';
 import { AccountService } from '../account/account.service';
 import { SummaryPageComponent } from './summary-page/summary-page.component';
-import { PackagePageComponent } from './package-page/package-page.component';
 import { OrderSummaryComponent } from './order-summary/order-summary.component';
 import { OrderPackComponent } from './order-pack/order-pack.component';
 import { SettlementPageComponent } from './settlement-page/settlement-page.component';
@@ -78,7 +77,6 @@ import { PickupPageComponent } from './pickup-page/pickup-page.component';
     OrderPackComponent,
     SettlementComponent,
     SummaryPageComponent,
-    PackagePageComponent,
     SettlementPageComponent,
     MapPageComponent,
     ReceiveCashDialogComponent,

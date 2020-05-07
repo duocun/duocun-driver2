@@ -1,5 +1,36 @@
 @import '../../base';
 
+$btn-w: 60px;
+
+.date-input-block{
+  width: 100%;
+  height: 60px;
+  display: block;
+  margin: 0px;
+  padding: 10px 10px 0px 10px;
+
+  form{
+    width: 100%;
+    display: flex;
+    
+    .date-input{
+      width: calc(100% - 40px);
+      margin-bottom: 10px;
+    }
+  }
+}
+
+.col-refresh{
+  width: $btn-w;
+  float: left;
+}
+
+.col-date{
+  width: calc(100% - #{$btn-w});
+  float: left;
+  display: flex;
+}
+
 .pickup-row{
   padding: 10px;
 }
@@ -175,7 +206,10 @@ $lable-width: 50px;
     padding: 5px;
   }
 }
-
+.order-list{
+  height: calc(100% - #{$bottom-bar-h});
+  overflow-y: scroll;
+}
 .order-block{
   margin-bottom: 6px;
 }

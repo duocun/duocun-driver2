@@ -105,9 +105,8 @@ export class OrderPackComponent implements OnInit, OnDestroy, OnChanges {
     const self = this;
     if (v.deliverDate && v.deliverDate.currentValue) {
 
-
       self.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe(account => {
-
+        self.account = account;
         self.reload(this.pickupTime, this.deliverDate).then((r: any) => {
           self.clientIds = this.sharedSvc.getDistinctValues(r.orders, 'clientId');
           // if (self.clientIds && self.clientIds.length > 0) {
@@ -222,31 +221,18 @@ reload(pickupTime: string, deliverDate: string) {
 groupByProduct(type, orders) {
   const productMap = {};
   const rs = orders.filter(order => order.type === type);
-  rs.map(r => {
-    r.items.map(it => {
+  rs.forEach(r => {
+    r.items.forEach(it => {
       productMap[it.productId] = { productName: it.product.name, quantity: 0 };
     });
   });
-  rs.map(r => {
-    r.items.map(it => {
+  rs.forEach(r => {
+    r.items.forEach(it => {
       productMap[it.productId].quantity += it.quantity;
     });
   });
 
   return Object.keys(productMap).map(pId => productMap[pId]);
-
-  // const groups = [];
-  // rs.map(order => {
-  //   order.items.map(it => {
-  //     const group = groups.find(g => g.productId === it.productId);
-  //     if (group) {
-  //       group.quantity += it.quantity;
-  //     } else {
-  //       groups.push({ productId: it.productId, productName: it.product.name, quantity: it.quantity });
-  //     }
-  //   });
-  // });
-  // return groups;
 }
 
 

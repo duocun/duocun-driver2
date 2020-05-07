@@ -10,6 +10,7 @@ import { IOrder, OrderStatus } from '../order.model';
 import { AccountService } from '../../account/account.service';
 import { SharedService } from '../../shared/shared.service';
 import { IAccount } from '../../account/account.model';
+import { Router } from '../../../../node_modules/@angular/router';
 const icons = {
   'F': {
     yellow: 'assets/images/f-yellow.png',
@@ -39,6 +40,7 @@ export class MapPageComponent implements OnInit, OnDestroy {
 
   constructor(
     private rx: NgRedux<IAppState>,
+    private router: Router,
     private orderSvc: OrderService,
     private accountSvc: AccountService,
     private sharedSvc: SharedService
@@ -62,43 +64,47 @@ export class MapPageComponent implements OnInit, OnDestroy {
 
   reload() {
     const self = this;
-    const range = { $gt: moment().startOf('day').toISOString(), $lt: moment().endOf('day').toISOString() };
-    const orderQuery = {
-      delivered: range,
-      driverId: this.account._id,
-      status: { $nin: [OrderStatus.BAD, OrderStatus.DELETED, OrderStatus.TEMP] }
-    };
-    const fields = ['code', 'clientName', 'merchantName', 'status', 'client', 'note', 'items'];
-    this.orderSvc.quickFind(orderQuery, fields).pipe(takeUntil(this.onDestroy$)).subscribe((orders: any[]) => {
-      const pickups = ['所有订单', '10:00', '11:20']; // this.orderSvc.getPickupTimes(orders);
-      const phases = [];
-      let os1;
-      pickups.map(pickup => {
-        if (pickup === '所有订单') {
-          os1 = orders;
-        } else {
-          os1 = orders.filter(x => x.pickupTime === pickup);
-        }
-        // const os1 = orders.filter(x => x.delivered === this.sharedSvc.getDateTime(moment(), pickup).toISOString());
-        const places = [];
-
-        os1.map(order => {
-          const icon = order.status === OrderStatus.DONE ? icons[order.type]['green'] : icons[order.type]['red'];
-
-          const a = places.find(p => p && p.location.placeId === order.location.placeId);
-          const location = order.location;
-          if (a) {
-            a.orders.push(order);
+    if (this.account) {
+      const range = { $gt: moment().startOf('day').toISOString(), $lt: moment().endOf('day').toISOString() };
+      const orderQuery = {
+        delivered: range,
+        driverId: this.account._id,
+        status: { $nin: [OrderStatus.BAD, OrderStatus.DELETED, OrderStatus.TEMP] }
+      };
+      const fields = ['code', 'clientName', 'merchantName', 'status', 'client', 'note', 'items'];
+      this.orderSvc.quickFind(orderQuery, fields).pipe(takeUntil(this.onDestroy$)).subscribe((orders: any[]) => {
+        const pickups = ['所有订单', '10:00', '11:20']; // this.orderSvc.getPickupTimes(orders);
+        const phases = [];
+        let os1;
+        pickups.map(pickup => {
+          if (pickup === '所有订单') {
+            os1 = orders;
           } else {
-            places.push({ status: order.status, icon: icon, name: order.clientName, location, orders: [order] });
+            os1 = orders.filter(x => x.pickupTime === pickup);
           }
+          // const os1 = orders.filter(x => x.delivered === this.sharedSvc.getDateTime(moment(), pickup).toISOString());
+          const places = [];
+
+          os1.map(order => {
+            const icon = order.status === OrderStatus.DONE ? icons[order.type]['green'] : icons[order.type]['red'];
+
+            const a = places.find(p => p && p.location.placeId === order.location.placeId);
+            const location = order.location;
+            if (a) {
+              a.orders.push(order);
+            } else {
+              places.push({ status: order.status, icon: icon, name: order.clientName, location, orders: [order] });
+            }
+          });
+
+          phases.push({ pickup: pickup, places: places });
         });
 
-        phases.push({ pickup: pickup, places: places });
+        self.phases = phases;
       });
-
-      self.phases = phases;
-    });
+    } else {
+      this.router.navigate(['account/login']);
+    }
   }
 
 }
