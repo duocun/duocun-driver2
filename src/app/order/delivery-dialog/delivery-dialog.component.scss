@@ -16,7 +16,9 @@
 
   .address-col{
     padding: 0px;
-
+    .text-sm{
+      font-size: 12px;
+    }
   }
 
   .nav-col{
@@ -31,7 +33,12 @@
   }
 }
 
-
+.label{
+  font-size: 12px;
+}
+.left{
+  padding-left: 0px;
+}
 .order-list{
   margin-top: 50px;
 }
@@ -45,9 +52,9 @@
     margin: 0px;
   }
 
-  .merchant-row, .note-row, .order-id-row, .client-row, .phonenum-row, .address-row, .navigate-row, .client-attr-row{
-    font-size: 14px;
-    padding-bottom: 5px;
+  .merchant-row, .note-row, .order-id-row, .client-row, .phonenum-row, .unit-row, .address-row, .navigate-row, .client-attr-row{
+    font-size: 12px;
+    padding-bottom: 2px;
     .col-3 {
       padding: 0px;
     }

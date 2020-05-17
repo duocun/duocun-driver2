@@ -42,10 +42,7 @@
       </mat-expansion-panel-header>
 
       <div class="order">
-        <div class="row merchant-row">
-          <div class="col-3" i18n="@@Merchant">Merchant</div>
-          <div class="col-9">{{it.order.merchantName}}</div>
-        </div>
+
         <div class="row phonenum-row">
           <div class="col-3" i18n="@@ClientPhoneNumber">Client Phone Number</div>
           <div class="col-9" *ngIf="it.order.client && it.order.client.phone">
@@ -54,7 +51,22 @@
             <a style="font-size:14px;" [href]="'tel:' + it.order.client.phone" i18n="@@Call">Call</a>
           </div>
           <div *ngIf="!it.order.client">未登记号码</div>
-          <div *ngIf="bAllowMsg" class="btn btn-sm btn-primary" (click)="sendClientMsg(it.order)">消息通知客户到货</div>
+        </div>
+
+        <div class="row">
+          <div class="col-6 left">
+            <div class="row merchant-row">
+              <div class="col-3" i18n="@@Merchant">Merchant</div>
+              <div class="col-9">{{it.order.merchantName}}</div>
+            </div>
+            <div *ngIf="it.unit" class="row unit-row">
+              <div class="col-3">Unit #</div>
+              <div class="col-9" >{{it.unit}}</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div *ngIf="bAllowMsg" class="btn btn-sm btn-primary" (click)="sendClientMsg(it.order)">消息通知客户到货</div>
+          </div>
         </div>
 
         <div class="row note-row" *ngIf="it.order.note">
@@ -65,7 +77,7 @@
       <form [formGroup]="forms[it.order._id]" class="info-form">
         <div class="row info-row">
           <div class="col-3 label-col">
-            <div i18n="@@ClientInfo">Client Info</div>
+            <div class="label" i18n="@@ClientInfo">Client Info</div>
             <div *ngIf="bAllowSave[it.order._id]" class="btn btn-primary" (click)="onSubmitClientInfo(it.order)" i18n="@@Save">Save</div>
           </div>
           <div class="col-9" class="note-col">
@@ -79,7 +91,7 @@
         <div class="col-9">
           <mat-form-field class="attributes-field">
             <mat-label>
-              <span i18n="@@ClientAttribute">Client Attribute</span>
+              <span class="label" i18n="@@ClientAttribute">Client Attribute</span>
             </mat-label>
             <mat-select [(value)]="it.order.client.attributes" (selectionChange)="onAttributesChanged(it.order.client, $event)" (openedChange)="onSave(it.order.client, $event)"
               multiple floatLabel="never">
@@ -92,9 +104,9 @@
       </div>
 
       <div class="row product-block">
-        <div class="col-9" *ngIf="it.order.items && it.order.items.length > 0">
+        <div class="col-12" *ngIf="it.order.items && it.order.items.length > 0">
           <div *ngFor="let item of it.order.items" class="text-sm row">
-            <div class="col-6 product-col" *ngIf="item.product" [ngClass]="getProductCssClass(item)">{{item.product.name}}</div>
+            <div class="col-9 product-col" *ngIf="item.product" [ngClass]="getProductCssClass(item)">{{item.product.name}}</div>
             <div class="col-3 quantity-col" [class.emphasise]="item.quantity>1">x{{item.quantity}}</div>
           </div>
         </div>

@@ -130,7 +130,7 @@ export class DeliveryDialogComponent implements OnInit, OnDestroy {
 
     return new Promise((resolve, reject) => {
       this.orderSvc.find(orderQuery).pipe(takeUntil(this.onDestroy$)).subscribe((orders: IOrder[]) => {
-        orders.map(order => {
+        orders.forEach(order => {
           const infoText = order.client.info;
           this.forms[order._id] = this.fb.group({
             info: [infoText]
@@ -157,12 +157,13 @@ export class DeliveryDialogComponent implements OnInit, OnDestroy {
   groupByAddress(location: ILocation, orders: IOrder[]) {
     const address = this.locationSvc.getAddrString(location);
     const group = { placeId: location.placeId, address: address, items: [] };
-    orders.map(order => {
+    orders.forEach(order => {
       if (order.driverId) {
+        const unit = (order.location && order.location.unit) ? order.location.unit : '';
         const code = order.code;
         const status = order.status;
         const balance = order.client ? order.client.balance : 0;
-        group.items.push({ order, balance, code, status });
+        group.items.push({ order, balance, code, status, unit });
       }
     });
     return group;

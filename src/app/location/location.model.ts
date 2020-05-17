@@ -16,6 +16,7 @@ export interface ILocation {
   streetName: string;
   streetNumber: string;
   subLocality: string;
+  unit?: string;
 }
 
 export interface ILatLng {

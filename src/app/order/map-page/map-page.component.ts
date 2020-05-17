@@ -76,7 +76,7 @@ export class MapPageComponent implements OnInit, OnDestroy {
         const pickups = ['所有订单', '10:00', '11:20']; // this.orderSvc.getPickupTimes(orders);
         const phases = [];
         let os1;
-        pickups.map(pickup => {
+        pickups.forEach(pickup => {
           if (pickup === '所有订单') {
             os1 = orders;
           } else {
@@ -85,7 +85,7 @@ export class MapPageComponent implements OnInit, OnDestroy {
           // const os1 = orders.filter(x => x.delivered === this.sharedSvc.getDateTime(moment(), pickup).toISOString());
           const places = [];
 
-          os1.map(order => {
+          os1.forEach(order => {
             const icon = order.status === OrderStatus.DONE ? icons[order.type]['green'] : icons[order.type]['red'];
 
             const a = places.find(p => p && p.location.placeId === order.location.placeId);
