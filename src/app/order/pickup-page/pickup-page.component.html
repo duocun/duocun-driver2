@@ -7,10 +7,8 @@
     <div class="row date-input-block">
       <form [formGroup]="dateForm">
         <div class="col-date">
-          <input class="date-input" matInput [matDatepicker]="picker" i18n-placeholder placeholder="Choose a date"
-            [formControl]="date"
-            (click)="picker.open()"
-            (dateChange)="onDateChange('change', $event)">
+          <input class="date-input" matInput [matDatepicker]="picker" i18n-placeholder placeholder="Choose a date" [formControl]="date"
+            (click)="picker.open()" (dateChange)="onDateChange('change', $event)">
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </div>
@@ -20,7 +18,23 @@
       </form>
     </div>
 
-    <!-- <div class="pickup-row">
+    <div class="summary" *ngIf="productGroups && productGroups.length > 0">
+      <!-- <div class="title title-sm">取件统计:</div> -->
+      <div class="row row-product" *ngFor="let pg of productGroups">
+        <div class="col-7 text-sm">{{pg.productName}}</div>
+        <div class="col-2 text-sm">x{{pg.quantity}}</div>
+        <div class="col-3 col-toggle">
+          <mat-slide-toggle [checked]="isPickedUp(pg)" (change)="onChangePickup($event, pg)">
+            <span *ngIf="!isPickedUp(pg)" class="warning">未取</span>
+            <span *ngIf="isPickedUp(pg)" class="success">已取</span>
+          </mat-slide-toggle>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <div class="pickup-row">
       <div class="label">取件时间:</div>
       <mat-button-toggle-group #group="matButtonToggleGroup" [value]="pickup" (change)="onSelectPickup($event)">
         <mat-button-toggle value="{{pickup}}" aria-label="{{pickup}}" *ngFor="let pickup of pickups">
@@ -29,7 +43,7 @@
       </mat-button-toggle-group>
     </div> -->
 
-    <div class="order-list" *ngIf="groups && groups.length>0">
+<!-- <div class="order-list" *ngIf="groups && groups.length>0">
       <div *ngFor="let grp of groups">
         <div class="merchant-block">
           <span i18n="Merchant">Merchant</span>:
@@ -99,18 +113,5 @@
               <div class="btn btn-primary" *ngIf="it.balance>=0 && it.status !== Status.DONE" (click)="finishDelivery(it.order)">完成订单</div>
             </div>
           </mat-expansion-panel>
-    
         </div>    
-      </div>
-
-      <div class="summary" *ngIf="productGroups && productGroups.length > 0">
-        <div class="title title-sm">取件统计:</div>
-        <div class="row" *ngFor="let pg of productGroups">
-          <div class="col-10 text-sm">{{pg.productName}}</div>
-          <div class="col-2 text-sm">x{{pg.quantity}}</div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
+      </div> -->

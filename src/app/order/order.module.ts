@@ -37,6 +37,7 @@ import { SharedService } from '../shared/shared.service';
 import { LocationService } from '../location/location.service';
 import { DeliveryDialogComponent } from './delivery-dialog/delivery-dialog.component';
 import { PickupPageComponent } from './pickup-page/pickup-page.component';
+import { PickupService } from './pickup.service';
 
 @NgModule({
   imports: [
@@ -69,6 +70,7 @@ import { PickupPageComponent } from './pickup-page/pickup-page.component';
     MerchantBalanceService,
     TransactionService,
     LocationService,
+    PickupService,
     SharedService
   ],
   declarations: [

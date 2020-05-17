@@ -273,3 +273,24 @@ $header-height: 90px;
   height: 70%;
   max-width: none !important;
 }
+
+.summary{
+  height: calc(100% - #{$bottom-bar-h});
+  overflow-y: scroll;
+}
+.row-product{
+  border-bottom: 1px solid #eee;
+  padding-top: 9px;
+  padding-bottom: 8px;
+}
+.col-toggle{
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.warning{
+  color: red;
+}
+.success{
+  color: green;
+}
