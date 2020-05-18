@@ -11,7 +11,7 @@ import { DEFAULT_MALL } from './mall/mall.actions';
 import { IMall } from './mall/mall.model';
 import { mallReducer } from './mall/mall.reducers';
 import { IDelivery } from './delivery/delivery.model';
-import { deliveryReducer } from './delivery/delivery.reducer';
+import { deliveryReducer, DEFAULT_DELIVERY, deliverDateReducer, DEFAULT_DELIVER_DATE } from './delivery/delivery.reducer';
 import { IContact } from './contact/contact.model';
 import { contactReducer } from './contact/contact.reducer';
 import { restaurantReducer } from './restaurant/restaurant.reducer';
@@ -25,6 +25,7 @@ export interface IAppState {
     location: ILocation;
     page: string;
     cmd: ICommand;
+    deliverDate: string;
     // deliveryTime: IDeliveryTime;
     restaurant: IMerchant;
     malls: IMall[];
@@ -38,6 +39,7 @@ export const INITIAL_STATE: IAppState = {
     location: null,
     page: 'home',
     cmd: {name: '', args: ''},
+    deliverDate: DEFAULT_DELIVER_DATE,
     // deliveryTime: {text: '', from: null, to: null},
     restaurant: null,
     malls: [DEFAULT_MALL],
@@ -61,6 +63,7 @@ export const rootReducer = combineReducers({
     location: locationReducer,
     page: pageReducer,
     cmd: commandReducer,
+    deliverDate: deliverDateReducer,
     // deliveryTime: deliveryTimeReducer,
     restaurant: restaurantReducer,
     malls: mallReducer,

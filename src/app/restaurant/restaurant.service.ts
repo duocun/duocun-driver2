@@ -17,7 +17,7 @@ export class MerchantService extends EntityService {
     this.url = super.getBaseUrl() + 'Restaurants';
   }
 
-  isClosed(restaurant: IMerchant, deliveryTime: IDeliveryTime) {
+  isClosed(restaurant: IMerchant, deliveryTime: any) {
     const deliverDate = moment(deliveryTime.from);
     // const tomorrow = moment().add(1, 'days');
     // const afterTomorrow = moment().add(2, 'days');
@@ -33,7 +33,7 @@ export class MerchantService extends EntityService {
     }
   }
 
-  isClosePerWeek(restaurant: IMerchant, deliveryTime: IDeliveryTime) {
+  isClosePerWeek(restaurant: IMerchant, deliveryTime: any) {
     if (restaurant.dow && restaurant.dow.length > 0) {
       const openAll = restaurant.dow.find(d => d === 'all');
       if (openAll) {

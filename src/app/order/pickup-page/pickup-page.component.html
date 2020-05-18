@@ -7,8 +7,12 @@
     <div class="row date-input-block">
       <form [formGroup]="dateForm">
         <div class="col-date">
-          <input class="date-input" matInput [matDatepicker]="picker" i18n-placeholder placeholder="Choose a date" [formControl]="date"
-            (click)="picker.open()" (dateChange)="onDateChange('change', $event)">
+          <input class="date-input" matInput i18n-placeholder placeholder="Choose a date" 
+            [formControl]="date"
+            [matDatepicker]="picker" 
+            (click)="picker.open()" 
+            (dateChange)="onDateChange('change', $event)"
+          />
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </div>

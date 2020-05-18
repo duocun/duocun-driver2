@@ -37,7 +37,7 @@ export class MapPageComponent implements OnInit, OnDestroy {
   account;
   delivered;
   phases = [];
-
+  deliverDate;
   constructor(
     private rx: NgRedux<IAppState>,
     private router: Router,
@@ -46,6 +46,13 @@ export class MapPageComponent implements OnInit, OnDestroy {
     private sharedSvc: SharedService
   ) {
     this.currLocation = { lat: 43.8461479, lng: -79.37935279999999 };
+
+    this.rx.select('deliverDate').pipe(takeUntil(this.onDestroy$)).subscribe((d: string) => {
+      this.deliverDate = d;
+      // this.reload(this.pickup, d, OrderType.GROCERY).then(() => {
+
+      // });
+    });
   }
 
   ngOnInit() {
@@ -65,9 +72,9 @@ export class MapPageComponent implements OnInit, OnDestroy {
   reload() {
     const self = this;
     if (this.account) {
-      const range = { $gt: moment().startOf('day').toISOString(), $lt: moment().endOf('day').toISOString() };
+      // const range = { $gt: moment().startOf('day').toISOString(), $lt: moment().endOf('day').toISOString() };
       const orderQuery = {
-        delivered: range,
+        delivered: this.deliverDate + 'T15:00:00.000Z',
         driverId: this.account._id,
         status: { $nin: [OrderStatus.BAD, OrderStatus.DELETED, OrderStatus.TEMP] }
       };

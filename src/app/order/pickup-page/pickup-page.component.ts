@@ -15,6 +15,9 @@ import { FormBuilder } from '../../../../node_modules/@angular/forms';
 import { MatDatepickerInputEvent, MatSnackBar } from '../../../../node_modules/@angular/material';
 import { PaymentMethod } from '../../payment/payment.model';
 import { PickupService } from '../pickup.service';
+import { NgRedux } from '../../../../node_modules/@angular-redux/store';
+import { IAppState } from '../../store';
+import { DeliveryActions } from '../../delivery/delivery.actions';
 export const DriverStatus = {
   ACTIVE: 'A',
   INACTIVE: 'I'
@@ -40,7 +43,7 @@ export class PickupPageComponent implements OnInit, OnDestroy {
   groups;
   pickup = '11:20';
   dateForm;
-  deliverDate = moment().format('YYYY-MM-DD');
+  deliverDate;
   productGroups;
   PaymentMethod = PaymentMethod;
 
@@ -53,26 +56,33 @@ export class PickupPageComponent implements OnInit, OnDestroy {
     private sharedSvc: SharedService,
     private locationSvc: LocationService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private rx: NgRedux<IAppState>
   ) {
     this.dateForm = this.fb.group({ date: [''] });
 
+    this.rx.select('deliverDate').pipe(takeUntil(this.onDestroy$)).subscribe((d: string) => {
+      this.deliverDate = d;
+      this.date.setValue(d);
+      if (this.account) {
+        this.reload(this.pickup, d, OrderType.GROCERY).then(() => {
+
+        });
+      }
+    });
   }
 
   get date() { return this.dateForm.get('date'); }
 
   onDateChange(type: string, event: MatDatepickerInputEvent<Date>) {
-    this.deliverDate = moment(event.value).format('YYYY-MM-DD');
+    const deliverDate = moment(event.value).format('YYYY-MM-DD');
+    this.rx.dispatch({ type: DeliveryActions.SET_DELIVER_DATE, payload: deliverDate });
     const date = moment(event.value).set({ hour: 10, minute: 0, second: 0, millisecond: 0 });
     this.date.setValue(date);
-
-    this.reload(this.pickup, this.deliverDate, OrderType.GROCERY).then(() => {
-
-    });
   }
 
   ngOnInit() {
-    this.mount().then((account) => {
+    this.mount(OrderType.GROCERY).then((account) => {
       if (account) {
         this.groups = this.groupByMerchants(this.orders);
       } else {
@@ -104,7 +114,7 @@ export class PickupPageComponent implements OnInit, OnDestroy {
     return date + 'T15:00:00.000Z';
   }
 
-  mount() {
+  mount(type) {
     const self = this;
     const pickupTime = this.pickup;
     // tslint:disable-next-line:no-shadowed-variable
@@ -121,18 +131,22 @@ export class PickupPageComponent implements OnInit, OnDestroy {
             const delivered = this.getDelivered(this.deliverDate); // this.getDateRange(this.deliverDate);
             const driverId = account._id;
             const qOrder = {
-              pickupTime,
+              // pickupTime,
               driverId,
               delivered,
               status: { $nin: [OrderStatus.BAD, OrderStatus.DELETED, OrderStatus.TEMP] }
             };
             this.orderSvc.find(qOrder).pipe(takeUntil(this.onDestroy$)).subscribe((orders: IOrder[]) => {
               const qPickup = { delivered, driverId };
-              // this.pickupSvc.find(qPickup).pipe(takeUntil(this.onDestroy$)).subscribe((pickupList: any[]) => {
-              this.orders = [...orders];
-              this.pickups = this.getPickupTimeList();
-              resolve(account);
-              // });
+              this.pickupSvc.find(qPickup).pipe(takeUntil(this.onDestroy$)).subscribe((r: any) => {
+                const pickups = r.data;
+                // const groups = this.groupByMerchants(orders);
+                const productGroups = this.groupByProduct(type, orders, pickups);
+                this.productGroups = productGroups;
+                this.orders = [...orders];
+                this.pickups = this.getPickupTimeList();
+                resolve(account);
+              });
             });
           });
         } else { // not authorized for opreration merchant
@@ -168,7 +182,7 @@ export class PickupPageComponent implements OnInit, OnDestroy {
           });
         });
       } else {
-        this.router.navigate(['account/login']);
+        // this.router.navigate(['account/login']);
         resolve();
       }
     });

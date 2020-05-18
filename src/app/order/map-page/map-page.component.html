@@ -1,4 +1,5 @@
 <div class="page">
+  <div class="row deliver-date-row">送货日期: {{deliverDate}}</div>
   <mat-tab-group mat-align-tabs="center">
     <mat-tab label="{{phase.pickup}}" *ngFor="let phase of phases">
       <div class="map-block" *ngIf="phase && phase.places && phase.places.length>0">

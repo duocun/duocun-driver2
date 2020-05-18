@@ -1,5 +1,8 @@
 import { IDelivery } from './delivery.model';
 import { DeliveryActions } from './delivery.actions';
+import * as moment from 'moment';
+
+export const DEFAULT_DELIVER_DATE = moment().format('YYYY-MM-DD');
 
 export const DEFAULT_DELIVERY = {
   origin: null,
@@ -13,6 +16,14 @@ export interface IDeliveryAction {
   type: string;
   payload: IDelivery;
 }
+
+export const deliverDateReducer = (state: string = DEFAULT_DELIVER_DATE, action: any) => {
+  switch (action.type) {
+    case DeliveryActions.SET_DELIVER_DATE:
+      return action.payload;
+  }
+  return state;
+};
 
 export function deliveryReducer(state: IDelivery = DEFAULT_DELIVERY, action: IDeliveryAction) {
   switch (action.type) {
