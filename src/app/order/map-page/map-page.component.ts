@@ -104,6 +104,17 @@ export class MapPageComponent implements OnInit, OnDestroy {
             }
           });
 
+          // Unfinished Order place to the last
+          places.forEach(p => {
+            p.orders = p.orders.sort((a, b) => {
+              if (a.status === OrderStatus.DONE) {
+                return -1;
+              } else {
+                return 1;
+              }
+            });
+          });
+
           phases.push({ pickup: pickup, places: places });
         });
 

@@ -13,6 +13,8 @@ import { ILocation } from '../../location/location.model';
 import { ReceiveCashDialogComponent } from '../receive-cash-dialog/receive-cash-dialog.component';
 import { FormBuilder } from '../../../../node_modules/@angular/forms';
 import { PaymentMethod } from '../../payment/payment.model';
+import { NgRedux } from '../../../../node_modules/@angular-redux/store';
+import { IAppState } from '../../store';
 
 export interface IDeliveryDialogData {
   title: string;
@@ -42,6 +44,7 @@ export class DeliveryDialogComponent implements OnInit, OnDestroy {
   PaymentMethod = PaymentMethod;
 
   bAllowMsg = true;
+  deliverDate;
 
   constructor(
     private orderSvc: OrderService,
@@ -49,7 +52,7 @@ export class DeliveryDialogComponent implements OnInit, OnDestroy {
     private accountSvc: AccountService,
     private router: Router,
     private snackBar: MatSnackBar,
-    // private rx: NgRedux<IAppState>,
+    private rx: NgRedux<IAppState>,
     private fb: FormBuilder,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<DeliveryDialogComponent>,
@@ -57,7 +60,12 @@ export class DeliveryDialogComponent implements OnInit, OnDestroy {
   ) {
     dialogRef.disableClose = true;
 
+    this.rx.select('deliverDate').pipe(takeUntil(this.onDestroy$)).subscribe((d: string) => {
+      this.deliverDate = d;
+      // this.reload(this.pickup, d, OrderType.GROCERY).then(() => {
 
+      // });
+    });
   }
 
   ngOnInit() {
@@ -114,7 +122,7 @@ export class DeliveryDialogComponent implements OnInit, OnDestroy {
   // return placeId, address, items
   reload(account: IAccount, pickupText: string, place: any): Promise<any> {
     const driverId = account._id;
-    const range = { $gt: moment().startOf('day').toISOString(), $lt: moment().endOf('day').toISOString() };
+    // const range = { $gt: moment().startOf('day').toISOString(), $lt: moment().endOf('day').toISOString() };
     const location = place.location;
     const placeId = location.placeId;
 
@@ -123,7 +131,7 @@ export class DeliveryDialogComponent implements OnInit, OnDestroy {
     const orderQuery = {
       driverId,
       'location.placeId': placeId,
-      delivered: range,
+      delivered: this.deliverDate + 'T15:00:00.000Z',
       // pickupTime,
       status: { $nin: [OrderStatus.BAD, OrderStatus.DELETED, OrderStatus.TEMP] }
     };

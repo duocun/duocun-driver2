@@ -353,7 +353,9 @@ export class PickupPageComponent implements OnInit, OnDestroy {
     const query = { driverId: row.driverId, delivered: row.delivered, productId: row.productId };
     const status = event.checked ? PickupStatus.PICKED_UP : PickupStatus.UNPICK_UP;
     if (row._id) {
+      const _id = row._id;
       const data = { ...row, status };
+      delete data._id;
       this.pickupSvc.update(query, data).pipe(takeUntil(this.onDestroy$)).subscribe(() => {
         this.snackBar.open('', '取货状态已更改', { duration: 1000 });
         this.reload(this.pickup, this.deliverDate, OrderType.GROCERY).then((r: any) => {
