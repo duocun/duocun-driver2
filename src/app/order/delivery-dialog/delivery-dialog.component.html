@@ -55,17 +55,17 @@
 
         <div class="row">
           <div class="col-6 left">
-            <div class="row merchant-row">
+            <!-- <div class="row merchant-row">
               <div class="col-3" i18n="@@Merchant">Merchant</div>
               <div class="col-9">{{it.order.merchantName}}</div>
-            </div>
+            </div> -->
             <div *ngIf="it.unit" class="row unit-row">
               <div class="col-3">Unit #</div>
               <div class="col-9" >{{it.unit}}</div>
             </div>
           </div>
           <div class="col-6">
-            <div *ngIf="bAllowMsg" class="btn btn-sm btn-primary" (click)="sendClientMsg(it.order)">消息通知客户到货</div>
+            <!-- <div *ngIf="bAllowMsg" class="btn btn-sm btn-primary" (click)="sendClientMsg(it.order)">消息通知客户到货</div> -->
           </div>
         </div>
 
@@ -74,7 +74,7 @@
           <div class="col-9 note-text">{{it.order.note}}</div>
         </div>
       </div>
-      <form [formGroup]="forms[it.order._id]" class="info-form">
+      <!-- <form [formGroup]="forms[it.order._id]" class="info-form">
         <div class="row info-row">
           <div class="col-3 label-col">
             <div class="label" i18n="@@ClientInfo">Client Info</div>
@@ -84,9 +84,9 @@
             <textarea class="info-input" name="info" formControlName="info" (click)="onClickClientInfo(it.order)"></textarea>
           </div>
         </div>
-      </form>
+      </form> -->
 
-      <div class="row client-attr-row" *ngIf="it.order.client">
+      <!-- <div class="row client-attr-row" *ngIf="it.order.client">
         <div class="col-3" i18n="@@ClientAttribute">Client Attribute</div>
         <div class="col-9">
           <mat-form-field class="attributes-field">
@@ -101,7 +101,7 @@
             </mat-select>
           </mat-form-field>
         </div>
-      </div>
+      </div> -->
 
       <div class="row product-block">
         <div class="col-12" *ngIf="it.order.items && it.order.items.length > 0">
