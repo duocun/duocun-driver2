@@ -4,15 +4,20 @@ import { takeUntil } from '../../../../node_modules/rxjs/operators';
 import { Subject } from '../../../../node_modules/rxjs';
 import { DeliveryDialogComponent } from '../../order/delivery-dialog/delivery-dialog.component';
 import { OrderStatus } from '../../order/order.model';
+import { environment } from '../../../environments/environment';
 
+// import {MarkerClusterer} from '@google/markerclustererplus/dist/markerclusterer';
+
+declare var MarkerClusterer: any;
 declare let google: any;
+const MEDIA_URL = environment.MEDIA_URL;
 const icons = {
-  'F' : {
-  yellow: 'assets/images/f-yellow.png',
-  green: 'assets/images/f-green.png',
-  red: 'assets/images/f-red.png',
+  'F': {
+    yellow: 'assets/images/f-yellow.png',
+    green: 'assets/images/f-green.png',
+    red: 'assets/images/f-red.png',
   },
-  'G' : {
+  'G': {
     yellow: 'assets/images/g-yellow.png',
     green: 'assets/images/g-green.png',
     red: 'assets/images/g-red.png',
@@ -41,8 +46,10 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild('map', { static: true }) input: ElementRef;
 
   onDestroy$ = new Subject();
-  markers = [];
   map;
+  markerCluster;
+  markerMap = {};
+
 
   constructor(
     public dialogSvc: MatDialog
@@ -53,7 +60,7 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(v) {
-    this.initMap();
+    this.initMap(this.places);
   }
 
   ngOnDestroy() {
@@ -74,27 +81,30 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
 
     dialogRef.afterClosed().pipe(takeUntil(this.onDestroy$)).subscribe(group => {
       if (group) {
-        this.updatePlace(this.map, group);
+        this.updatePlace(group);
       }
     });
   }
 
-  addPlaces(map) {
+  // init map
+  addPlaces(map, places) {
     const self = this;
-    if (this.places && this.places.length) {
-      this.places.map((p, i) => {
+    let markerCluster = null;
+    if (places && places.length) {
+      places.forEach((p, i) => {
         const iconUrl = p.icon ? p.icon : 'http://labs.google.com/ridefinder/images/mm_20_red.png';
         const location = p.location;
         const marker1 = new google.maps.Marker({
           position: { lat: location.lat, lng: location.lng },
           label: {
-            text: self.places[i].name,
-            fontSize: '11px'
+            text: self.getAddr(self.places[i].location),
+            fontSize: '14px'
           },
           icon: {
             url: iconUrl
           },
-          placeId: p.location.placeId
+          placeId: p.location.placeId,
+          status: p.status
         });
 
         // if (p.status === 'done') {
@@ -106,9 +116,29 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
         // }
 
         marker1.setMap(map);
-        this.markers.push(marker1);
+        this.markerMap[p.location.placeId] = marker1;
+        // this.markers.push(marker1);
       });
+
+      const markers = Object.keys(this.markerMap).map(placeId => this.markerMap[placeId]);
+      markerCluster = new MarkerClusterer(map, markers, { imagePath: 'assets/images/cluster-red' });
+      markerCluster.addListener('clusteringend', (mc) => {
+        const a = mc.getClusters();
+        if (a && a.length > 0) {
+          a.forEach(p => {
+            p.clusterIcon_.url_ = self.isFinished(p.markers_) ? 'assets/images/cluster-green1.png' : 'assets/images/cluster-red1.png';
+          });
+        }
+      });
+      // 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
     }// end of this.places
+
+    return markerCluster;
+  }
+
+  isFinished(its) {
+    const unfinished = its.filter(m => m.status !== OrderStatus.DONE);
+    return !(unfinished && unfinished.length > 0);
   }
 
   removePlaces() {
@@ -117,62 +147,36 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
         google.maps.event.removeListener(p.listener);
       });
     }
-    this.markers.map(m => {
-      m.setMap(null);
+    Object.keys(this.markerMap).forEach(placeId => {
+      this.markerMap[placeId].setMap(null);
     });
   }
 
-  updatePlace(map: any, group: any) {
+  updatePlace(group: any) {
     const self = this;
 
     const place: any = this.places.find(p => p.location.placeId === group.placeId);
-    const marker: any = this.markers.find(m => m.placeId === group.placeId);
-    let isDone = true; // place.status === 'done';
-    // group.items.push({ balance: balance, order: order, code: code, status: status, paid: (order.status === 'paid') });
-    group.items.map(x => {
-      if (x.status !== OrderStatus.DONE) {
-        isDone = false;
-      }
-    });
+    const marker: any = this.markerMap[group.placeId];
+    const isDone = self.isFinished(group.items);
     const type = group.items[0].order.type;
+
     place.icon = isDone ? icons[type]['green'] : icons[type]['red']; // icons['green'] : icons['red'];
 
-    google.maps.event.removeListener(place.listener);
-
-    marker.setMap(null);
-
     const iconUrl = place.icon ? place.icon : 'http://labs.google.com/ridefinder/images/mm_20_red.png';
-    const newMarker = new google.maps.Marker({
-      position: place.location,
-      label: {
-        text: place.name,
-        fontSize: '11px'
-      },
-      icon: {
-        url: iconUrl
-      },
-      placeId: group.placeId
+    marker.setIcon({ url: iconUrl, status: isDone ? OrderStatus.DONE : OrderStatus.NEW });
+    const markers = this.markerCluster.getMarkers();
+    markers.forEach(m => {
+      if (m.placeId === marker.placeId) {
+        m.icon = { url: iconUrl };
+        m.status = isDone ? OrderStatus.DONE : OrderStatus.NEW;
+      }
     });
-
-    place.listener = newMarker.addListener('click', function () {
-      self.openDeliveryDialog(place);
-    });
-
-    newMarker.setMap(map);
-    this.markers.push(newMarker);
   }
 
 
-  initMap() {
+  initMap(places) {
     const self = this;
 
-    // if (this.markers && this.markers.length > 0) {
-    //   this.markers.map(marker => {
-    //     if (marker) {
-    //       marker.setMap(null);
-    //     }
-    //   });
-    // }
     if (typeof google !== 'undefined') {
       const mapDom = this.input.nativeElement;
       const map = new google.maps.Map(mapDom, {
@@ -184,9 +188,21 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
         fullscreenControl: false
       });
 
-      this.addPlaces(map);
+      this.markerCluster = this.addPlaces(map, places);
       this.map = map;
     }
   }
 
+  getAddr(location) {
+    if (location) {
+      const addr = location.unit ? `${location.unit} ` : '';
+      if (location.subLocality) {
+        return addr + `${location.streetNumber} ${location.streetName}, ${location.subLocality}`;
+      } else {
+        return addr + `${location.streetNumber} ${location.streetName}, ${location.city}`;
+      }
+    } else {
+      return '';
+    }
+  }
 }

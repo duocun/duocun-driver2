@@ -24,6 +24,7 @@
     "@angular/platform-browser": "^8.1.0",
     "@angular/platform-browser-dynamic": "^8.1.0",
     "@angular/router": "^6.1.9",
+    "@google/markerclustererplus": "^5.0.4",
     "@ng-bootstrap/ng-bootstrap": "^4.0.0",
     "@types/js-cookie": "^2.2.2",
     "@types/uuid": "^3.4.4",
