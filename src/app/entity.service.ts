@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
 import { AuthService } from './account/auth.service';
 import { IEntity } from './entity.model';
-
+import queryString from "querystring";
 
 @Injectable()
 export class EntityService {
@@ -22,22 +22,22 @@ export class EntityService {
   }
 
   // without database join
-  quickFind(filter?: any, fields?: any): Observable<any> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json');
-    const accessTokenId = this.cookieSvc.getAccessTokenId();
-    if (accessTokenId) {
-      headers = headers.append('Authorization', this.authPrefix + accessTokenId);
-      // httpParams = httpParams.append('access_token', LoopBackConfig.getAuthPrefix() + accessTokenId);
-    }
-    if (filter) {
-      headers = headers.append('filter', JSON.stringify(filter));
-    }
-    if (fields) {
-      headers = headers.append('fields', JSON.stringify(fields));
-    }
-    return this.http.get(this.url + '/qFind', { headers: headers });
-  }
+  // find(filter?: any, fields?: any): Observable<any> {
+  //   let headers: HttpHeaders = new HttpHeaders();
+  //   headers = headers.append('Content-Type', 'application/json');
+  //   const accessTokenId = this.cookieSvc.getAccessTokenId();
+  //   if (accessTokenId) {
+  //     headers = headers.append('Authorization', this.authPrefix + accessTokenId);
+  //     // httpParams = httpParams.append('access_token', LoopBackConfig.getAuthPrefix() + accessTokenId);
+  //   }
+  //   if (filter) {
+  //     headers = headers.append('filter', JSON.stringify(filter));
+  //   }
+  //   if (fields) {
+  //     headers = headers.append('fields', JSON.stringify(fields));
+  //   }
+  //   return this.http.get(this.url + '/qFind', { headers: headers });
+  // }
 
   find(filter?: any): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
@@ -45,12 +45,19 @@ export class EntityService {
     const accessTokenId = this.cookieSvc.getAccessTokenId();
     if (accessTokenId) {
       headers = headers.append('Authorization', this.authPrefix + accessTokenId);
-      // httpParams = httpParams.append('access_token', LoopBackConfig.getAuthPrefix() + accessTokenId);
     }
-    if (filter) {
-      headers = headers.append('filter', JSON.stringify(filter));
+    // if (filter) {
+    //   headers = headers.append('filter', JSON.stringify(filter));
+    // }
+    let url;
+    if(filter){
+      const queryStr = JSON.stringify({'where': filter});
+      url = `${this.url}?${queryString.stringify({'query': queryStr})}`;
+    }else{
+      url = this.url;
     }
-    return this.http.get(this.url, {headers: headers});
+    
+    return this.http.get(url, {headers: headers});
   }
 
   findById(id: string, filter?: any): Observable<any> {

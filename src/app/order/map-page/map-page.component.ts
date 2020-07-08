@@ -10,6 +10,7 @@ import { IOrder, OrderStatus } from '../order.model';
 import { AccountService } from '../../account/account.service';
 import { SharedService } from '../../shared/shared.service';
 import { IAccount } from '../../account/account.model';
+import { IDelivery } from '../../delivery/delivery.model';
 const icons = {
   'F': {
     yellow: 'assets/images/f-yellow.png',
@@ -36,6 +37,7 @@ export class MapPageComponent implements OnInit, OnDestroy {
   account;
   delivered;
   phases = [];
+  deliverDate;
 
   constructor(
     private rx: NgRedux<IAppState>,
@@ -53,6 +55,10 @@ export class MapPageComponent implements OnInit, OnDestroy {
       self.account = account;
       self.reload();
     });
+
+    this.rx.select<IDelivery>('delivery').pipe(takeUntil(this.onDestroy$)).subscribe((d: IDelivery) => {
+      this.deliverDate = d.deliverDate;
+    });
   }
 
   ngOnDestroy() {
@@ -62,14 +68,15 @@ export class MapPageComponent implements OnInit, OnDestroy {
 
   reload() {
     const self = this;
-    const range = { $gt: moment().startOf('day').toISOString(), $lt: moment().endOf('day').toISOString() };
+    // const range = { $gt: moment().startOf('day').toISOString(), $lt: moment().endOf('day').toISOString() };
     const orderQuery = {
-      delivered: range,
+      deliverDate: this.deliverDate,
       driverId: this.account._id,
       status: { $nin: [OrderStatus.BAD, OrderStatus.DELETED, OrderStatus.TEMP] }
     };
-    const fields = ['code', 'clientName', 'merchantName', 'status', 'client', 'note', 'items'];
-    this.orderSvc.quickFind(orderQuery, fields).pipe(takeUntil(this.onDestroy$)).subscribe((orders: any[]) => {
+    // const fields = ['code', 'clientName', 'merchantName', 'status', 'client', 'note', 'items'];
+    this.orderSvc.find(orderQuery).pipe(takeUntil(this.onDestroy$)).subscribe((r: any) => {
+      const orders = r.data;
       const pickups = ['所有订单', '10:00', '11:20']; // this.orderSvc.getPickupTimes(orders);
       const phases = [];
       let os1;

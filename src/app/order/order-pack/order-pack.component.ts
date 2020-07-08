@@ -67,7 +67,7 @@ export class OrderPackComponent implements OnInit, OnDestroy, OnChanges {
         const q = { _id: { $in: self.clientIds } };
         this.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe(account => {
           self.account = account;
-          self.accountSvc.quickFind(q).pipe(takeUntil(this.onDestroy$)).subscribe((accounts: IAccount[]) => {
+          self.accountSvc.find(q).pipe(takeUntil(this.onDestroy$)).subscribe((accounts: IAccount[]) => {
             self.accounts = accounts;
             self.reload(this.pickupTime, this.deliverDate).then((r: any) => {
               this.orders = r.orders;
@@ -109,7 +109,7 @@ export class OrderPackComponent implements OnInit, OnDestroy, OnChanges {
           self.clientIds = this.sharedSvc.getDistinctValues(r.orders, 'clientId');
           // if (self.clientIds && self.clientIds.length > 0) {
           const q = { _id: { $in: self.clientIds } };
-          self.accountSvc.quickFind(q).pipe(takeUntil(this.onDestroy$)).subscribe((accounts: IAccount[]) => {
+          self.accountSvc.find(q).pipe(takeUntil(this.onDestroy$)).subscribe((accounts: IAccount[]) => {
             self.account = account;
             self.accounts = accounts;
             this.orders = r.orders;
@@ -220,7 +220,7 @@ groupByProduct(type, orders) {
   const rs = orders.filter(order => order.type === type);
   rs.map(r => {
     r.items.map(it => {
-      productMap[it.productId] = { productName: it.product.name, quantity: 0 };
+      productMap[it.productId] = { productName: it.productName, quantity: 0 };
     });
   });
   rs.map(r => {

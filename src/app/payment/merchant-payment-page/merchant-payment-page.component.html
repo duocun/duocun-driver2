@@ -43,7 +43,7 @@
           <div>
             <div [ngClass]="row.items ? 'red':''">{{row.description}}</div>
             <div *ngFor="let it of row.items">
-              {{it.product.name.length > 9 ? ((it.product.name | slice:0:7) + '..') : it.product.name}} x {{it.quantity}}
+              {{it.productName.length > 9 ? ((it.productName | slice:0:7) + '..') : it.productName}} x {{it.quantity}}
             </div>
           </div>
 

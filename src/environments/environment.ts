@@ -8,14 +8,11 @@ export const environment = {
   API_VERSION: 'api',
   SECURE: window.location.protocol === 'https:',
   API_BASE: window.location.protocol + '//' + window.location.hostname + ':8000',
-  API_URL: 'http://localhost:8000/api/',
+  API_URL: 'http://localhost:8001/api/admin/',
   APP_URL: window.location.origin,
   MEDIA_URL: 'http://localhost:8000/',
   APP: 'duocun',
   AUTH_PREFIX: '',
-  GOOGLE_MAP: {
-    KEY: ''
-  },
   GOOGLE_LOGIN: {
     CLIENT_ID: '489357362854-cktl4l0mnbj70b4rrcu771on38865d2v.apps.googleusercontent.com'
   },

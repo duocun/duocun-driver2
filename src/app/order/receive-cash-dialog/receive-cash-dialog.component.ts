@@ -69,9 +69,9 @@ export class ReceiveCashDialogComponent implements OnInit, OnDestroy {
     const orderId = this.data.orderId;
 
     if (this.data) {
-      this.orderSvc.quickFind({ _id: orderId }).pipe(takeUntil(self.onDestroy$)).subscribe((orders: IOrder[]) => {
+      this.orderSvc.find({ _id: orderId }).pipe(takeUntil(self.onDestroy$)).subscribe((orders: IOrder[]) => {
         this.order = orders[0];
-        this.accountSvc.quickFind({ _id: this.order.clientId }).pipe(takeUntil(self.onDestroy$)).subscribe((accounts: IAccount[]) => {
+        this.accountSvc.find({ _id: this.order.clientId }).pipe(takeUntil(self.onDestroy$)).subscribe((accounts: IAccount[]) => {
           const balance = accounts[0].balance;
           this.receivable = balance < 0 ? -balance : 0;
         });

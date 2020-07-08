@@ -92,7 +92,7 @@ export class PackagePageComponent implements OnInit, OnDestroy {
       if (account && account.roles) {
         const roles = account.roles;
         if (roles && roles.length > 0 && roles.indexOf(Role.DRIVER) !== -1) {
-          // self.merchantSvc.quickFind(q).pipe(takeUntil(this.onDestroy$)).subscribe((rs: IMerchant[]) => {
+          // self.merchantSvc.find(q).pipe(takeUntil(this.onDestroy$)).subscribe((rs: IMerchant[]) => {
           //   if (rs && rs.length > 0) {
           //     self.restaurant = rs[0];
           //   } else {
