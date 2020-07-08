@@ -7,9 +7,6 @@ import { ILocation } from './location/location.model';
 // import { IPicture, DEFAULT_PICTURE } from './commerce/commerce.actions';
 import { pageReducer, DEFAULT_PAGE } from './main/main.reducers';
 import { commandReducer, ICommand } from './shared/command.reducers';
-import { DEFAULT_MALL } from './mall/mall.actions';
-import { IMall } from './mall/mall.model';
-import { mallReducer } from './mall/mall.reducers';
 import { IDelivery } from './delivery/delivery.model';
 import { deliveryReducer, DEFAULT_DELIVERY } from './delivery/delivery.reducer';
 import { IContact } from './contact/contact.model';
@@ -26,7 +23,6 @@ export interface IAppState {
     cmd: ICommand;
     // deliveryTime: IDeliveryTime;
     restaurant: IMerchant;
-    malls: IMall[];
     delivery: IDelivery;
     contact: IContact;
 }
@@ -39,7 +35,6 @@ export const INITIAL_STATE: IAppState = {
     cmd: {name: '', args: ''},
     // deliveryTime: {text: '', from: null, to: null},
     restaurant: null,
-    malls: [DEFAULT_MALL],
     delivery: DEFAULT_DELIVERY,
     contact: null,
 };
@@ -62,7 +57,6 @@ export const rootReducer = combineReducers({
     cmd: commandReducer,
     // deliveryTime: deliveryTimeReducer,
     restaurant: restaurantReducer,
-    malls: mallReducer,
     delivery: deliveryReducer,
     contact: contactReducer
 });

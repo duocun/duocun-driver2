@@ -14,12 +14,8 @@ import { ContactService } from '../contact.service';
 import { Contact, IContact } from '../contact.model';
 import { ContactActions } from '../contact.actions';
 import { IContactAction } from '../contact.reducer';
-// import { MallService } from '../../mall/mall.service';
-import { IMall } from '../../mall/mall.model';
-import { ICommand, ICommandAction } from '../../shared/command.reducers';
 import { PageActions } from '../../main/main.actions';
 import { IDeliveryTime } from '../../delivery/delivery.model';
-import { CommandActions } from '../../shared/command.actions';
 import * as Cookies from 'js-cookie';
 
 @Component({
@@ -33,7 +29,6 @@ export class ContactFormPageComponent implements OnInit, OnDestroy {
   options = [];
   contact: IContact;
   deliveryAddress: string;
-  malls: IMall[];
   bDeliveryTime = false;
   deliveryTime: IDeliveryTime = null;
   oldDeliveryTime: IDeliveryTime = null;

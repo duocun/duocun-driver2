@@ -245,24 +245,7 @@ export class PickupPageComponent implements OnInit, OnDestroy {
       + '&destination_placeId=' + location.placeId);
   }
 
-  // patition(orders: IOrder[], malls: IMall[]) {
-  //   const groupedOrders = [];
-  //   orders.map((order: IOrder) => {
-  //     const row = [];
-  //     let shortest = this.locationSvc.getDirectDistance(order.location, { lat: malls[0].lat, lng: malls[0].lng });
-  //     let selectedMall = malls[0];
 
-  //     malls.map((mall: IMall) => {
-  //       const distance = this.locationSvc.getDirectDistance(order.location, { lat: mall.lat, lng: mall.lng });
-  //       if (shortest > distance) {
-  //         selectedMall = mall;
-  //         shortest = distance;
-  //       }
-  //     });
-  //     groupedOrders.push({ order: order, mall: selectedMall, distance: shortest });
-  //   });
-  //   return groupedOrders;
-  // }
   getProductCssClass(item) {
     if (item && item.product && item.product.categoryId === '5cbc5df61f85de03fd9e1f12') {
       return 'beverage';

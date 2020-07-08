@@ -6,7 +6,6 @@ import { SharedService } from '../../shared/shared.service';
 import { Subject } from '../../../../node_modules/rxjs';
 import { takeUntil } from '../../../../node_modules/rxjs/operators';
 import { ILocation } from '../../location/location.model';
-import { IMall } from '../../mall/mall.model';
 import { LocationService } from '../../location/location.service';
 import { AccountService } from '../../account/account.service';
 import { IAccount } from '../../account/account.model';
@@ -263,14 +262,14 @@ navigateTo(location: ILocation) {
     + '&destination_placeId=' + location.placeId);
 }
 
-patition(orders: IOrder[], malls: IMall[]) {
+patition(orders: IOrder[], malls: any[]) {
   const groupedOrders = [];
   orders.map((order: IOrder) => {
     const row = [];
     let shortest = this.locationSvc.getDirectDistance(order.location, { lat: malls[0].lat, lng: malls[0].lng });
     let selectedMall = malls[0];
 
-    malls.map((mall: IMall) => {
+    malls.map((mall: any) => {
       const distance = this.locationSvc.getDirectDistance(order.location, { lat: mall.lat, lng: mall.lng });
       if (shortest > distance) {
         selectedMall = mall;

@@ -3,10 +3,8 @@ import { Router } from '@angular/router';
 import { NgRedux } from '@angular-redux/store';
 import { Account, Role } from '../account/account.model';
 import { IAppState } from '../store';
-import { CommandActions } from '../shared/command.actions';
 import { takeUntil } from '../../../node_modules/rxjs/operators';
 import { Subject } from '../../../node_modules/rxjs';
-import { IMall } from '../mall/mall.model';
 import { ILocation } from '../location/location.model';
 import { AccountService } from '../account/account.service';
 // import { AccountService } from '../account/account.service';
@@ -25,7 +23,6 @@ export class FooterComponent implements OnInit, OnDestroy {
   total;
   quantity = 0;
   cart;
-  malls: IMall[];
   subtotal = 0;
   deliveryFee = 0;
   tax = 0;
