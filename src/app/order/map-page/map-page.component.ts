@@ -5,12 +5,11 @@ import { IAppState } from '../../store';
 import { takeUntil } from '../../../../node_modules/rxjs/operators';
 import { Subject } from '../../../../node_modules/rxjs';
 import { OrderService } from '../order.service';
-import * as moment from 'moment';
 import { IOrder, OrderStatus } from '../order.model';
 import { AccountService } from '../../account/account.service';
 import { SharedService } from '../../shared/shared.service';
-import { IAccount } from '../../account/account.model';
-import { Router } from '../../../../node_modules/@angular/router';
+
+import { IDelivery } from '../../delivery/delivery.model';
 const icons = {
   'F': {
     yellow: 'assets/images/f-yellow.png',
@@ -38,6 +37,7 @@ export class MapPageComponent implements OnInit, OnDestroy {
   delivered;
   phases = [];
   deliverDate;
+
   constructor(
     private rx: NgRedux<IAppState>,
     private router: Router,
@@ -58,9 +58,13 @@ export class MapPageComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const self = this;
 
-    this.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe((account: IAccount) => {
-      self.account = account;
+    this.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe((r: any) => {
+      self.account = r.data;
       self.reload();
+    });
+
+    this.rx.select<IDelivery>('delivery').pipe(takeUntil(this.onDestroy$)).subscribe((d: IDelivery) => {
+      this.deliverDate = d.deliverDate;
     });
   }
 
@@ -71,19 +75,22 @@ export class MapPageComponent implements OnInit, OnDestroy {
 
   reload() {
     const self = this;
-    if (this.account) {
-      // const range = { $gt: moment().startOf('day').toISOString(), $lt: moment().endOf('day').toISOString() };
-      const orderQuery = {
-        delivered: this.deliverDate + 'T15:00:00.000Z',
-        driverId: this.account._id,
-        status: { $nin: [OrderStatus.BAD, OrderStatus.DELETED, OrderStatus.TEMP] }
-      };
-      const fields = ['code', 'clientName', 'merchantName', 'status', 'client', 'note', 'items'];
-      this.orderSvc.quickFind(orderQuery, fields).pipe(takeUntil(this.onDestroy$)).subscribe((orders: any[]) => {
+    // const range = { $gt: moment().startOf('day').toISOString(), $lt: moment().endOf('day').toISOString() };
+    const orderQuery = {
+      deliverDate: this.deliverDate,
+      driverId: this.account._id,
+      status: { $nin: [OrderStatus.BAD, OrderStatus.DELETED, OrderStatus.TEMP] }
+    };
+    // const fields = ['code', 'clientName', 'merchantName', 'status', 'client', 'note', 'items'];
+    this.orderSvc.getRoute(this.deliverDate).pipe(takeUntil(this.onDestroy$)).subscribe((r: any) => {
+      const rs = r.data.routes.find(r => r.driverId === this.account._id);
+      const route = rs ? rs.route : [];
+      this.orderSvc.find(orderQuery).pipe(takeUntil(this.onDestroy$)).subscribe((r: any) => {
+        const orders = r.data;
         const pickups = ['所有订单', '10:00', '11:20']; // this.orderSvc.getPickupTimes(orders);
         const phases = [];
         let os1;
-        pickups.forEach(pickup => {
+        pickups.map(pickup => {
           if (pickup === '所有订单') {
             os1 = orders;
           } else {
@@ -91,7 +98,6 @@ export class MapPageComponent implements OnInit, OnDestroy {
           }
           // const os1 = orders.filter(x => x.delivered === this.sharedSvc.getDateTime(moment(), pickup).toISOString());
           const places = [];
-
           os1.forEach(order => {
             const icon = order.status === OrderStatus.DONE ? icons[order.type]['green'] : icons[order.type]['red'];
 
@@ -115,14 +121,12 @@ export class MapPageComponent implements OnInit, OnDestroy {
             });
           });
 
-          phases.push({ pickup: pickup, places: places });
+          phases.push({ pickup, places, route });
         });
 
         self.phases = phases;
       });
-    } else {
-      this.router.navigate(['account/login']);
-    }
+    });
   }
 
 }

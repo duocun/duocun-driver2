@@ -15,7 +15,6 @@ import { RestaurantRoutingModule } from './restaurant-routing.module';
 import { ProductModule } from '../product/product.module';
 
 import { ProductService } from '../product/product.service';
-import { CategoryService } from '../category/category.service';
 import { OrderService } from '../order/order.service';
 
 @NgModule({
@@ -35,7 +34,6 @@ import { OrderService } from '../order/order.service';
     providers: [
       MerchantService,
       ProductService,
-      CategoryService,
       OrderService
     ],
     declarations: [

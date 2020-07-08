@@ -16,10 +16,7 @@ import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { HttpClientModule } from '../../node_modules/@angular/common/http';
 import { EntityService } from './entity.service';
-import { createStore } from '../../node_modules/redux';
-import { GestureConfig } from '../../node_modules/@angular/material';
 import { AccountService } from './account/account.service';
-import { SharedService } from './shared/shared.service';
 
 
 const appRoutes: Routes = [

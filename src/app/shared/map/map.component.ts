@@ -44,12 +44,17 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
   @Input() places: any[];
   @Input() pickup: any;
   @ViewChild('map', { static: true }) input: ElementRef;
+  @Input() route;
 
   onDestroy$ = new Subject();
   map;
+<<<<<<< HEAD
   markerCluster;
   markerMap = {};
 
+=======
+  routes = [];
+>>>>>>> master
 
   constructor(
     public dialogSvc: MatDialog
@@ -141,6 +146,22 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
     return !(unfinished && unfinished.length > 0);
   }
 
+  addRoute(map) {
+    const self = this;
+    if (this.route && this.route.length) {
+      const route = new google.maps.Polyline({
+        path: this.route,
+        geodesic: true,
+        strokeColor: "#FF0000",
+        strokeOpacity: 1.0,
+        strokeWeight: 2
+      });
+
+      route.setMap(map);
+      this.routes.push(route);
+    }// end of this.places
+  }
+
   removePlaces() {
     if (this.places && this.places.length) {
       this.places.map((p, i) => {
@@ -151,8 +172,17 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
       this.markerMap[placeId].setMap(null);
     });
   }
+<<<<<<< HEAD
 
   updatePlace(group: any) {
+=======
+  removeRoutes() {
+    this.routes.map(m => {
+      m.setMap(null);
+    });
+  }
+  updatePlace(map: any, group: any) {
+>>>>>>> master
     const self = this;
 
     const place: any = this.places.find(p => p.location.placeId === group.placeId);
@@ -188,7 +218,12 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
         fullscreenControl: false
       });
 
+<<<<<<< HEAD
       this.markerCluster = this.addPlaces(map, places);
+=======
+      this.addPlaces(map);
+      this.addRoute(map);
+>>>>>>> master
       this.map = map;
     }
   }

@@ -53,7 +53,7 @@ export class MerchantPaymentPageComponent implements OnInit, OnDestroy {
       if (account && account.roles) {
         const roles = account.roles;
         if (roles && roles.length > 0 && roles.indexOf(Role.DRIVER) !== -1) {
-          this.accountSvc.quickFind({ type: 'merchant' }).pipe(takeUntil(this.onDestroy$)).subscribe(rs => {
+          this.accountSvc.find({ type: 'merchant' }).pipe(takeUntil(this.onDestroy$)).subscribe(rs => {
             this.merchantAccounts = rs;
           });
         }

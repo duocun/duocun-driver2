@@ -321,8 +321,8 @@ export class DeliveryDialogComponent implements OnInit, OnDestroy {
   }
 
   sendClientMsg(order) {
-    if (order.client && order.client.phone) {
-      this.accountSvc.sendClientMsg(order.type, order.client.phone, 'zh')
+    if (order.client && order.clientPhone) {
+      this.accountSvc.sendClientMsg(order.type, order.clientPhone, 'zh')
         .pipe(takeUntil(this.onDestroy$)).subscribe(() => {
           this.bAllowMsg = false;
           this.snackBar.open('', '消息已发送', { duration: 1000 });

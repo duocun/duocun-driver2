@@ -17,6 +17,7 @@ import { ILocationAction } from '../../location/location.reducer';
 import { LocationActions } from '../../location/location.actions';
 // import { MomentDateAdapter } from '../../../../node_modules/@angular/material-moment-adapter';
 import * as moment from 'moment';
+import { PageActions } from '../main.actions';
 
 const APP = environment.APP;
 
@@ -53,7 +54,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) {
   }
 
-
   ngOnInit() {
     const self = this;
     self.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe(account => {
@@ -73,9 +73,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   loginSuccessHandler(account: Account) {
     const roles = account.roles;
     if (roles && roles.length > 0 && roles.indexOf(Role.DRIVER) !== -1) {
-      // const todayStart = moment().startOf('day').toDate();
-      // const todayEnd = moment().endOf('day').toDate();
-      // const q = { $lt: todayEnd, $gt: todayStart };
+      this.rx.dispatch({ type: PageActions.SET_PAGE, payload: 'pickup'});
       this.router.navigate(['order/pickup']);
     } else { // not authorized for opreration merchant
       this.router.navigate(['account/setting'], { queryParams: { merchant: false } });

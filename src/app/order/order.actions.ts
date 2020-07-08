@@ -6,7 +6,3 @@
 //     static CLEAR_ORDER = 'CLEAR_ORDER';
 // }
 
-export class AmountActions {
-  static UPDATE = 'UPDATE_AMOUNT';
-  static CLEAR = 'CLEAR_AMOUNT';
-}

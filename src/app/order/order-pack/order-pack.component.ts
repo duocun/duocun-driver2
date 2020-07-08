@@ -6,7 +6,6 @@ import { SharedService } from '../../shared/shared.service';
 import { Subject } from '../../../../node_modules/rxjs';
 import { takeUntil } from '../../../../node_modules/rxjs/operators';
 import { ILocation } from '../../location/location.model';
-import { IMall } from '../../mall/mall.model';
 import { LocationService } from '../../location/location.service';
 import { AccountService } from '../../account/account.service';
 import { IAccount } from '../../account/account.model';
@@ -62,13 +61,12 @@ export class OrderPackComponent implements OnInit, OnDestroy, OnChanges {
   ngOnInit() {
     const self = this;
 
-    // why ??
     this.rx.select<ICommand>('cmd').pipe(takeUntil(this.onDestroy$)).subscribe((x: ICommand) => {
       if (x.name === 'reload-orders') {
         const q = { _id: { $in: self.clientIds } };
         this.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe(account => {
           self.account = account;
-          self.accountSvc.quickFind(q).pipe(takeUntil(this.onDestroy$)).subscribe((accounts: IAccount[]) => {
+          self.accountSvc.find(q).pipe(takeUntil(this.onDestroy$)).subscribe((accounts: IAccount[]) => {
             self.accounts = accounts;
             self.reload(this.pickupTime, this.deliverDate).then((r: any) => {
               this.orders = r.orders;
@@ -104,14 +102,13 @@ export class OrderPackComponent implements OnInit, OnDestroy, OnChanges {
   ngOnChanges(v) {
     const self = this;
     if (v.deliverDate && v.deliverDate.currentValue) {
-
       self.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe(account => {
         self.account = account;
         self.reload(this.pickupTime, this.deliverDate).then((r: any) => {
           self.clientIds = this.sharedSvc.getDistinctValues(r.orders, 'clientId');
           // if (self.clientIds && self.clientIds.length > 0) {
           const q = { _id: { $in: self.clientIds } };
-          self.accountSvc.quickFind(q).pipe(takeUntil(this.onDestroy$)).subscribe((accounts: IAccount[]) => {
+          self.accountSvc.find(q).pipe(takeUntil(this.onDestroy$)).subscribe((accounts: IAccount[]) => {
             self.account = account;
             self.accounts = accounts;
             this.orders = r.orders;
@@ -209,8 +206,7 @@ reload(pickupTime: string, deliverDate: string) {
       });
 
       const groups = Object.keys(merchantMap).map(mId => merchantMap[mId]);
-      // items: [{order:x, status: x},
-      // self.groups = this.groupByMerchants(accounts, orders);
+
       const productGroups = this.groupByProduct(OrderType.GROCERY, orders);
 
       resolve({orders, groups, productGroups});
@@ -224,6 +220,7 @@ groupByProduct(type, orders) {
   rs.forEach(r => {
     r.items.forEach(it => {
       productMap[it.productId] = { productName: it.product.name, quantity: 0 };
+
     });
   });
   rs.forEach(r => {
@@ -266,14 +263,14 @@ navigateTo(location: ILocation) {
     + '&destination_placeId=' + location.placeId);
 }
 
-patition(orders: IOrder[], malls: IMall[]) {
+patition(orders: IOrder[], malls: any[]) {
   const groupedOrders = [];
   orders.map((order: IOrder) => {
     const row = [];
     let shortest = this.locationSvc.getDirectDistance(order.location, { lat: malls[0].lat, lng: malls[0].lng });
     let selectedMall = malls[0];
 
-    malls.map((mall: IMall) => {
+    malls.map((mall: any) => {
       const distance = this.locationSvc.getDirectDistance(order.location, { lat: mall.lat, lng: mall.lng });
       if (shortest > distance) {
         selectedMall = mall;

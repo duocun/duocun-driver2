@@ -11,7 +11,7 @@ $blue: #4285F3;
 $primary-color: #4285F3;
 $inverse-font-color: white;
 $background-color: white;
-$border-color: #eee;
+$border-color: #bbb;
 
 $header-bg-color: #ddd;
 $info-bg: rgb(69,69,69);
@@ -37,6 +37,7 @@ $content-padding: 300px;
 $input-h: 38px;
 
 $navbar-h: 0px;
+
 
 .page{
   position: fixed;
@@ -111,6 +112,17 @@ app-footer{
     background: $header-bg-color;
     border-top: 1px solid $border-color;
   }
+}
+
+input{
+  box-shadow: none;
+  border: 1px solid $border-color;
+  border-radius: 4px;
+}
+
+.list{
+  overflow-y: scroll;
+  padding: 10px;
 }
 
 @media #{$tablet}{

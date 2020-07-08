@@ -9,26 +9,8 @@ export interface IDeliveryTime {
 }
 
 export interface IDelivery {
-  origin?: ILocation; // client location
-  destination?: ILocation; // mall location
-  availableRanges?: IRange[];
-  distance?: number; // m
-  fromTime?: Date;
-  toTime?: Date;
-}
-
-export class Delivery implements IDelivery {
-  id?: string;
-  origin: ILocation;
-  destination: ILocation;
-  availableRanges?: IRange[];
-  distance: number; // m
-  fromTime: Date;
-  toTime: Date;
-  created?: Date;
-  modified?: Date;
-
-  constructor(data?: IDelivery) {
-    Object.assign(this, data);
-  }
+  origin?: ILocation;         // client location
+  destination?: ILocation;    // mall location
+  deliverDate: string;
+  deliverTime: string;
 }
