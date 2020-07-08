@@ -40,10 +40,8 @@ export class MapPageComponent implements OnInit, OnDestroy {
 
   constructor(
     private rx: NgRedux<IAppState>,
-    private router: Router,
     private orderSvc: OrderService,
     private accountSvc: AccountService,
-    private sharedSvc: SharedService
   ) {
     this.currLocation = { lat: 43.8461479, lng: -79.37935279999999 };
 
