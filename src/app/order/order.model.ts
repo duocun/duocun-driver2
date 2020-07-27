@@ -22,7 +22,25 @@ export const OrderStatus = {
   MERCHANT_CHECKED: 'MC'  // VIEWED BY MERCHANT
 };
 
+export const DriverStatus = {
+  ACTIVE: 'A',
+  INACTIVE: 'I'
+};
 
+export const PickupStatus = {
+  UNPICK_UP: 'U',
+  PICKED_UP: 'P'
+};
+
+export interface IPickup {
+  _id?: string;
+  driverId: string;
+  productId: string;
+  productName: string;
+  quantity: number;
+  status: string;   // PickupStatus
+  delivered: string;
+}
 
 export interface IOrder {
   _id?: string;

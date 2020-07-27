@@ -39,8 +39,8 @@ export class OrderService extends EntityService {
     return this.doPost(url, { toId: toId, toName: toName, received: received, orderId: orderId, note: note });
   }
 
-  getRoute(deliverDate: string){
-    const url = `${this.url}/routes?deliverDate=${deliverDate}`
+  getRoute(deliverDate: string, driverId: string){
+    const url = `${this.url}/routes?deliverDate=${deliverDate}&driverId=${driverId}`;
     return this.doGet(url);
   }
 }

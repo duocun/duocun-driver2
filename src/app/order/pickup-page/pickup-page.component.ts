@@ -3,7 +3,7 @@ import { Subject } from '../../../../node_modules/rxjs';
 import { takeUntil } from '../../../../node_modules/rxjs/operators';
 import * as moment from 'moment';
 import { IMerchant, MerchantType, MerchantStatus } from '../../restaurant/restaurant.model';
-import { OrderStatus, IOrder, IOrderItem, OrderType } from '../order.model';
+import { OrderStatus, IOrder, IOrderItem, OrderType, IPickup, PickupStatus } from '../order.model';
 import { MerchantService } from '../../restaurant/restaurant.service';
 import { AccountService } from '../../account/account.service';
 import { OrderService } from '../order.service';
@@ -18,15 +18,7 @@ import { PickupService } from '../pickup.service';
 import { NgRedux } from '../../../../node_modules/@angular-redux/store';
 import { IAppState } from '../../store';
 import { DeliveryActions } from '../../delivery/delivery.actions';
-export const DriverStatus = {
-  ACTIVE: 'A',
-  INACTIVE: 'I'
-};
 
-export const PickupStatus = {
-  UNPICK_UP: 'U',
-  PICKED_UP: 'P'
-};
 
 @Component({
   selector: 'app-pickup-page',
@@ -142,7 +134,7 @@ export class PickupPageComponent implements OnInit, OnDestroy {
               this.pickupSvc.find(qPickup).pipe(takeUntil(this.onDestroy$)).subscribe((r: any) => {
                 const pickups = r.data;
                 // const groups = this.groupByMerchants(orders);
-                const productGroups = this.groupByProduct(type, orders, pickups);
+                const productGroups = this.groupByProduct(pickups);
                 this.productGroups = productGroups;
                 this.orders = [...orders];
                 this.pickups = this.getPickupTimeList();
@@ -176,7 +168,7 @@ export class PickupPageComponent implements OnInit, OnDestroy {
           this.pickupSvc.find(qPickup).pipe(takeUntil(this.onDestroy$)).subscribe((r: any) => {
             const pickups = r.data;
             const groups = this.groupByMerchants(orders);
-            const productGroups = this.groupByProduct(type, orders, pickups);
+            const productGroups = this.groupByProduct(pickups);
             this.orders = orders;
             this.groups = groups;
             this.productGroups = productGroups;
@@ -203,30 +195,12 @@ export class PickupPageComponent implements OnInit, OnDestroy {
     return Object.keys(merchantMap).map(mId => merchantMap[mId]);
   }
 
-  groupByProduct(type, orders, pickups) {
+  groupByProduct(pickups: IPickup[]) {
     const productMap = {};
-    const rs = orders.filter(order => order.type === type);
-    rs.forEach(r => {
-      const driverId = r.driverId;
-      const delivered = r.delivered;
-      r.items.forEach(it => {
-        const productId = it.productId;
-        const productName = it.productName;
-        productMap[it.productId] = { _id: '', driverId, delivered, productId, productName, quantity: 0, status: PickupStatus.UNPICK_UP };
-      });
-    });
-    rs.forEach(r => {
-      r.items.forEach(it => {
-        productMap[it.productId].quantity += it.quantity;
-      });
-    });
 
     if (pickups && pickups.length > 0) {
-      pickups.forEach((pickup: any) => {
-        if (productMap.hasOwnProperty(pickup.productId)) {
-          productMap[pickup.productId]._id = pickup._id;
-          productMap[pickup.productId].status = pickup.status;
-        }
+      pickups.forEach((pickup: IPickup) => {
+          productMap[pickup.productId] = pickup;
       });
     }
 
@@ -334,7 +308,7 @@ export class PickupPageComponent implements OnInit, OnDestroy {
   onChangePicked(order: IOrder) {
     if (order.status !== OrderStatus.DONE) {
       const data = { status: order.status === OrderStatus.LOADED ? OrderStatus.NEW : OrderStatus.LOADED };
-      this.orderSvc.update({ _id: order._id }, data).pipe(takeUntil(this.onDestroy$)).subscribe(() => {
+      this.orderSvc.update(order._id, data).pipe(takeUntil(this.onDestroy$)).subscribe(() => {
         this.snackBar.open('', '取餐状态已更改', { duration: 1000 });
         this.reload(this.pickup, this.deliverDate, OrderType.GROCERY).then((r: any) => {
           // this.orders = r.orders;
@@ -352,13 +326,12 @@ export class PickupPageComponent implements OnInit, OnDestroy {
   // for grocery
   // row --- { driverId, delivered, productName, quantity: 0, status: PickupStatus.UNPICK_UP };
   onChangePickup(event: any, row: any) {
-    const query = { driverId: row.driverId, delivered: row.delivered, productId: row.productId };
     const status = event.checked ? PickupStatus.PICKED_UP : PickupStatus.UNPICK_UP;
     if (row._id) {
-      const _id = row._id;
+      const pickupId = row._id;
       const data = { ...row, status };
       delete data._id;
-      this.pickupSvc.update(query, data).pipe(takeUntil(this.onDestroy$)).subscribe(() => {
+      this.pickupSvc.update(pickupId, data).pipe(takeUntil(this.onDestroy$)).subscribe(() => {
         this.snackBar.open('', '取货状态已更改', { duration: 1000 });
         this.reload(this.pickup, this.deliverDate, OrderType.GROCERY).then((r: any) => {
           // this.orders = r.orders;

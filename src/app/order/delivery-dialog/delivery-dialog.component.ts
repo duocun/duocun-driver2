@@ -259,7 +259,7 @@ export class DeliveryDialogComponent implements OnInit, OnDestroy {
     this.accountSvc.find({ _id: clientId }).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
       const client = data[0];
       // if (client && client.attributes && client.attributes.length > 0) {
-      this.orderSvc.update({ _id: order._id }, { status: OrderStatus.DONE }).pipe(takeUntil(this.onDestroy$)).subscribe(() => {
+      this.orderSvc.update(order._id, { status: OrderStatus.DONE }).pipe(takeUntil(this.onDestroy$)).subscribe(() => {
         this.snackBar.open('', '此订单已完成', { duration: 1800 });
         this.reload(this.account, this.data.pickup, this.data.place).then(group => {
           // if finish all delivery in this address, close the dialog; otherwise keep the dialog open
@@ -290,7 +290,7 @@ export class DeliveryDialogComponent implements OnInit, OnDestroy {
       const clientId = order.clientId;
       const info = this.forms[order._id].get('info').value;
       const data = { info: info };
-      this.accountSvc.update({ _id: clientId }, data).pipe(takeUntil(this.onDestroy$)).subscribe(() => {
+      this.accountSvc.update(clientId, data).pipe(takeUntil(this.onDestroy$)).subscribe(() => {
         this.snackBar.open('', '客户信息已经更新', { duration: 1800 });
         this.bAllowSave[order._id] = false;
       });
@@ -308,7 +308,7 @@ export class DeliveryDialogComponent implements OnInit, OnDestroy {
   onSave(client, bOpened) {
     if (!bOpened) {
       const attrs = client.attributes ? client.attributes : [];
-      this.accountSvc.update({ _id: client._id }, { attributes: attrs }).pipe(takeUntil(this.onDestroy$)).subscribe(() => {
+      this.accountSvc.update(client._id, { attributes: attrs }).pipe(takeUntil(this.onDestroy$)).subscribe(() => {
         this.snackBar.open('', client.username + '属性已更新', { duration: 1000 });
 
         // const client = this.clients.find(c => c._id === d._id);

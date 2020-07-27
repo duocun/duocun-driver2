@@ -106,24 +106,15 @@ export class EntityService {
     return this.http.post(this.url, entity, {headers: headers});
   }
 
-  replace(entity: IEntity): Observable<any> {
+  update(id: string, data: any): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
+    const url = `${this.url}/${id}`;
     headers = headers.append('Content-Type', 'application/json');
     const accessTokenId = this.cookieSvc.getAccessTokenId();
     if (accessTokenId) {
       headers = headers.append('Authorization', this.authPrefix + accessTokenId);
     }
-    return this.http.put(this.url, entity, {headers: headers});
-  }
-
-  update(filter: any, data: any): Observable<any> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json');
-    const accessTokenId = this.cookieSvc.getAccessTokenId();
-    if (accessTokenId) {
-      headers = headers.append('Authorization', this.authPrefix + accessTokenId);
-    }
-    return this.http.patch(this.url, {filter: filter, data: data}, {headers: headers});
+    return this.http.put(url, {data}, {headers: headers});
   }
 
   remove(filter?: any): Observable<any> {

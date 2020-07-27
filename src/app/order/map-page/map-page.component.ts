@@ -65,15 +65,16 @@ export class MapPageComponent implements OnInit, OnDestroy {
   reload() {
     const self = this;
     // const range = { $gt: moment().startOf('day').toISOString(), $lt: moment().endOf('day').toISOString() };
+    const driverId = this.account._id;
     const orderQuery = {
       deliverDate: this.deliverDate,
-      driverId: this.account._id,
+      driverId,
       status: { $nin: [OrderStatus.BAD, OrderStatus.DELETED, OrderStatus.TEMP] }
     };
     // const fields = ['code', 'clientName', 'merchantName', 'status', 'client', 'note', 'items'];
-    this.orderSvc.getRoute(this.deliverDate).pipe(takeUntil(this.onDestroy$)).subscribe((r: any) => {
-      const rs = r.data.routes.find(r => r.driverId === this.account._id);
-      const route = rs ? rs.route : [];
+    this.orderSvc.getRoute(this.deliverDate, driverId).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+      // const rs = r.data.routes.find(r => r.driverId === this.account._id);
+      const route = data.routes && data.routes.length > 0 ? data.routes[0].route : []; // rs ? rs.route : [];
       this.orderSvc.find(orderQuery).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
         const orders = data;
         const pickups = ['所有订单', '10:00', '11:20']; // this.orderSvc.getPickupTimes(orders);
