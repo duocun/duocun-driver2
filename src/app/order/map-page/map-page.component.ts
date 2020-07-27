@@ -7,9 +7,7 @@ import { Subject } from '../../../../node_modules/rxjs';
 import { OrderService } from '../order.service';
 import { IOrder, OrderStatus } from '../order.model';
 import { AccountService } from '../../account/account.service';
-import { SharedService } from '../../shared/shared.service';
 
-import { IDelivery } from '../../delivery/delivery.model';
 const icons = {
   'F': {
     yellow: 'assets/images/f-yellow.png',
@@ -47,22 +45,15 @@ export class MapPageComponent implements OnInit, OnDestroy {
 
     this.rx.select('deliverDate').pipe(takeUntil(this.onDestroy$)).subscribe((d: string) => {
       this.deliverDate = d;
-      // this.reload(this.pickup, d, OrderType.GROCERY).then(() => {
-
-      // });
     });
   }
 
   ngOnInit() {
     const self = this;
 
-    this.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe((r: any) => {
-      self.account = r.data;
+    this.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+      self.account = data;
       self.reload();
-    });
-
-    this.rx.select<IDelivery>('delivery').pipe(takeUntil(this.onDestroy$)).subscribe((d: IDelivery) => {
-      this.deliverDate = d.deliverDate;
     });
   }
 
@@ -83,8 +74,8 @@ export class MapPageComponent implements OnInit, OnDestroy {
     this.orderSvc.getRoute(this.deliverDate).pipe(takeUntil(this.onDestroy$)).subscribe((r: any) => {
       const rs = r.data.routes.find(r => r.driverId === this.account._id);
       const route = rs ? rs.route : [];
-      this.orderSvc.find(orderQuery).pipe(takeUntil(this.onDestroy$)).subscribe((r: any) => {
-        const orders = r.data;
+      this.orderSvc.find(orderQuery).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+        const orders = data;
         const pickups = ['所有订单', '10:00', '11:20']; // this.orderSvc.getPickupTimes(orders);
         const phases = [];
         let os1;

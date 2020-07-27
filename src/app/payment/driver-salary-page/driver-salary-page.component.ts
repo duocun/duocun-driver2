@@ -34,7 +34,8 @@ export class DriverSalaryPageComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const self = this;
-    self.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe(account => {
+    self.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+      const account = data;
       if (account && account.roles) {
         const roles = account.roles;
         if (roles && roles.length > 0 && roles.indexOf(Role.DRIVER) !== -1) {
@@ -49,7 +50,8 @@ export class DriverSalaryPageComponent implements OnInit, OnDestroy {
   reload(driverId) {
     this.driverHourSvc.find({ driverId: driverId }).pipe(takeUntil(this.onDestroy$)).subscribe((overtimes) => {
 
-      this.orderSvc.find({ driverId: driverId }).pipe(takeUntil(this.onDestroy$)).subscribe((orders) => {
+      this.orderSvc.find({ driverId: driverId }).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+        const orders = data;
         const groups = this.groupBy(orders, 'delivered');
         const salaryItems = [];
         const dates = Object.keys(groups);

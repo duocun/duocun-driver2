@@ -66,8 +66,8 @@ export class LoginFormComponent implements OnInit, OnDestroy {
         const tokenId: string = d.data;
         if (tokenId) {
           self.authSvc.setAccessTokenId(tokenId);
-          self.accountSvc.getCurrentAccount().subscribe((r: any) => {
-            const account = r.data;
+          self.accountSvc.getCurrentAccount().subscribe(({data}) => {
+            const account = data;
             if (account) {
               self.rx.dispatch({ type: AccountActions.UPDATE, payload: account }); // update header, footer icons
               const roles = account.roles;

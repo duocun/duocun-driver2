@@ -30,22 +30,7 @@ export class ChangePasswordComponent implements OnInit {
     changePassword() {
         let self = this;
         if (this.form.valid) {
-            // if(self.newPsw != self.conNewPsw){
-            //     self.errMsg = "NEW_PASSWORD_DIFF";
-            // }else{                      
-            //     self.authServ.changePassword(self.user.id, self.password, self.newPsw).subscribe(
-            //         function(msg){
-            //             if(msg.length==0){
-            //                 self.router.navigate(['/profiles'])
-            //             }else{
-            //                 self.errMsg = "INVALID_PASSOWRD";
-            //             }
-            //         }, 
-            //         function(error){
-            //             console.error('An error occurred', error);
-            //         }
-            //     );                                
-            // }
+            
         }else{
             self.errMsg = "INVALID_PASSOWRD";
         }  

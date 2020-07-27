@@ -71,7 +71,8 @@ export class ClientBalanceDialogComponent  implements OnInit, OnDestroy {
   reload(clientId: string) {
     const q = {'$or': [{ fromId: clientId }, { toId: clientId }]};
 
-    this.transactionSvc.find(q).pipe(takeUntil(this.onDestroy$)).subscribe((ts: ITransaction[]) => {
+    this.transactionSvc.find(q).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+      const ts = data;
       const list = [];
 
       // ['created', 'action', 'fromName', 'toName', 'amount', 'id'];

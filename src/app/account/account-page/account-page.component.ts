@@ -58,11 +58,8 @@ export class AccountPageComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const self = this;
     this.sub = this.route.queryParams.subscribe(params => {
-      // this.bMerchant = params['merchant'].toLowerCase() === 'true' ? true : false;
-
-      this.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe((account: IAccount) => {
-        self.account = account;
-        // self.loadSalary(account._id);
+      this.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+        self.account = data;
       });
     });
   }
@@ -71,25 +68,6 @@ export class AccountPageComponent implements OnInit, OnDestroy {
     this.onDestroy$.next();
     this.onDestroy$.complete();
   }
-
-  // applyMerchant() {
-  //   if (this.form.valid) {
-  //     const v = this.form.value;
-  //     this.accountSvc.applyMerchant(this.account.id, v.name).pipe(
-  //       takeUntil(this.onDestroy$)
-  //     ).subscribe(x => {
-  //       this.snackBar.open('', '已申请成为商户，请等待批准。', { duration: 1000 });
-  //       this.bApplied = true;
-  //     });
-  //   } else {
-  //     // alert('请选择要申请的餐馆');
-  //     this.errMsg = '请输入要申请的餐馆名称';
-  //   }
-  // }
-
-  // onChangeRestaurantName(e) {
-  //   this.errMsg = '';
-  // }
 
   toPaymentPage() {
     this.router.navigate(['payment/driver']);
@@ -110,7 +88,8 @@ export class AccountPageComponent implements OnInit, OnDestroy {
   }
 
   loadSalary(driverId: string) {
-    this.orderSvc.find({ driverId: driverId }).pipe(takeUntil(this.onDestroy$)).subscribe((orders) => {
+    this.orderSvc.find({ driverId: driverId }).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+      const orders = data;
       const groups = this.groupBy(orders, 'delivered');
       const salaryItems = [];
       const dates = Object.keys(groups);

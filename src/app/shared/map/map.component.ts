@@ -90,7 +90,7 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
   // init map
   addPlaces(map, places) {
     const self = this;
-    let markerCluster = null;
+    // let markerCluster = null;
     if (places && places.length) {
       places.forEach((p, i) => {
         const iconUrl = p.icon ? p.icon : 'http://labs.google.com/ridefinder/images/mm_20_red.png';
@@ -98,7 +98,7 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
         const marker1 = new google.maps.Marker({
           position: { lat: location.lat, lng: location.lng },
           label: {
-            text: self.getAddr(places[i].location),
+            text: self.getStreet(places[i].location),
             fontSize: '14px'
           },
           icon: {
@@ -124,7 +124,7 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
       const markers = Object.keys(this.markerMap).map(placeId => this.markerMap[placeId]);
     }// end of this.places
 
-    return markerCluster;
+    return; // markerCluster;
   }
 
   isFinished(its) {
@@ -176,8 +176,10 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
 
     const iconUrl = place.icon ? place.icon : 'http://labs.google.com/ridefinder/images/mm_20_red.png';
     marker.setIcon({ url: iconUrl, status: isDone ? OrderStatus.DONE : OrderStatus.NEW });
-    const markers = this.markerCluster.getMarkers();
-    markers.forEach(m => {
+    // const markers = this.markerCluster.getMarkers();
+    // markers.forEach(m => {
+    Object.keys(this.markerMap).forEach(placeId => {
+      const m = this.markerMap[placeId];
       if (m.placeId === marker.placeId) {
         m.icon = { url: iconUrl };
         m.status = isDone ? OrderStatus.DONE : OrderStatus.NEW;
@@ -216,6 +218,14 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
       }
     } else {
       return '';
+    }
+  }
+
+  getStreet(location) {
+    if (location) {
+      return `${location.streetNumber} ${location.streetName}`;
+    } else {
+      return 'N/A';
     }
   }
 }

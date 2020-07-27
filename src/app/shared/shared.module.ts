@@ -8,14 +8,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 
 
 import { WizardComponent } from './wizard/wizard.component';
-import { ImageViewerComponent } from './image-viewer/image-viewer.component';
-import { FeedbackComponent } from './feedback/feedback.component';
 import { MapComponent } from './map/map.component';
-// import { HeaderComponent } from './header/header.component';
-// import { FooterComponent } from './footer/footer.component';
 import { AddressInputComponent } from './address-input/address-input.component';
-// import { MultiImageUploaderComponent } from './multi-image-uploader/multi-image-uploader.component';
-// import { LocationService } from './location/location.service';
 import { SharedService } from './shared.service';
 import { AddressAutocompleteComponent } from './address-autocomplete/address-autocomplete.component';
 import { EntityService } from '../entity.service';
@@ -23,8 +17,6 @@ import { WarningDialogComponent } from './warning-dialog/warning-dialog.componen
 import { ProgressSpinnerComponent } from './progress-spinner/progress-spinner.component';
 import { DeliveryDialogComponent } from '../order/delivery-dialog/delivery-dialog.component';
 
-// import { PageService } from '../pages/page.service';
-// import { PagesModule } from '../pages/pages.module';
 @NgModule({
   imports: [
     CommonModule,
@@ -36,11 +28,7 @@ import { DeliveryDialogComponent } from '../order/delivery-dialog/delivery-dialo
   ],
   declarations: [
     WizardComponent,
-    ImageViewerComponent,
-    FeedbackComponent,
     MapComponent,
-    // HeaderComponent,
-    // FooterComponent,
     AddressInputComponent,
     AddressAutocompleteComponent,
     WarningDialogComponent,
@@ -52,7 +40,7 @@ import { DeliveryDialogComponent } from '../order/delivery-dialog/delivery-dialo
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   exports: [
-    WizardComponent, ImageViewerComponent, FeedbackComponent,
+    WizardComponent,
     MapComponent,
     // HeaderComponent,
     // FooterComponent,

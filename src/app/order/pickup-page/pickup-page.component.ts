@@ -136,8 +136,8 @@ export class PickupPageComponent implements OnInit, OnDestroy {
               delivered,
               status: { $nin: [OrderStatus.BAD, OrderStatus.DELETED, OrderStatus.TEMP] }
             };
-            this.orderSvc.find(qOrder).pipe(takeUntil(this.onDestroy$)).subscribe((r1: any) => {
-              const orders = r1.data;
+            this.orderSvc.find(qOrder).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+              const orders = data;
               const qPickup = { delivered, driverId };
               this.pickupSvc.find(qPickup).pipe(takeUntil(this.onDestroy$)).subscribe((r: any) => {
                 const pickups = r.data;
@@ -169,8 +169,8 @@ export class PickupPageComponent implements OnInit, OnDestroy {
           type,
           status: { $nin: [OrderStatus.BAD, OrderStatus.DELETED, OrderStatus.TEMP] }
         };
-        this.orderSvc.find(orderQuery).pipe(takeUntil(this.onDestroy$)).subscribe((r: any) => {
-          const orders = r.data;
+        this.orderSvc.find(orderQuery).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+          const orders = data;
           const delivered = this.getDelivered(this.deliverDate); // this.getDateRange(deliverDate);
           const qPickup = { delivered, driverId };
           this.pickupSvc.find(qPickup).pipe(takeUntil(this.onDestroy$)).subscribe((r: any) => {
@@ -210,8 +210,8 @@ export class PickupPageComponent implements OnInit, OnDestroy {
       const driverId = r.driverId;
       const delivered = r.delivered;
       r.items.forEach(it => {
-        const productId = it.product._id;
-        const productName = it.product.name;
+        const productId = it.productId;
+        const productName = it.productName;
         productMap[it.productId] = { _id: '', driverId, delivered, productId, productName, quantity: 0, status: PickupStatus.UNPICK_UP };
       });
     });
