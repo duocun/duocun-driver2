@@ -48,13 +48,9 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
 
   onDestroy$ = new Subject();
   map;
-<<<<<<< HEAD
   markerCluster;
   markerMap = {};
-
-=======
   routes = [];
->>>>>>> master
 
   constructor(
     public dialogSvc: MatDialog
@@ -86,7 +82,7 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
 
     dialogRef.afterClosed().pipe(takeUntil(this.onDestroy$)).subscribe(group => {
       if (group) {
-        this.updatePlace(group);
+        this.updatePlace(this.map, group);
       }
     });
   }
@@ -102,7 +98,7 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
         const marker1 = new google.maps.Marker({
           position: { lat: location.lat, lng: location.lng },
           label: {
-            text: self.getAddr(self.places[i].location),
+            text: self.getAddr(places[i].location),
             fontSize: '14px'
           },
           icon: {
@@ -126,16 +122,6 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
       });
 
       const markers = Object.keys(this.markerMap).map(placeId => this.markerMap[placeId]);
-      markerCluster = new MarkerClusterer(map, markers, { imagePath: 'assets/images/cluster-red' });
-      markerCluster.addListener('clusteringend', (mc) => {
-        const a = mc.getClusters();
-        if (a && a.length > 0) {
-          a.forEach(p => {
-            p.clusterIcon_.url_ = self.isFinished(p.markers_) ? 'assets/images/cluster-green1.png' : 'assets/images/cluster-red1.png';
-          });
-        }
-      });
-      // 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
     }// end of this.places
 
     return markerCluster;
@@ -164,7 +150,7 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
 
   removePlaces() {
     if (this.places && this.places.length) {
-      this.places.map((p, i) => {
+      this.places.forEach((p, i) => {
         google.maps.event.removeListener(p.listener);
       });
     }
@@ -172,17 +158,13 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
       this.markerMap[placeId].setMap(null);
     });
   }
-<<<<<<< HEAD
 
-  updatePlace(group: any) {
-=======
   removeRoutes() {
-    this.routes.map(m => {
+    this.routes.forEach(m => {
       m.setMap(null);
     });
   }
   updatePlace(map: any, group: any) {
->>>>>>> master
     const self = this;
 
     const place: any = this.places.find(p => p.location.placeId === group.placeId);
@@ -218,12 +200,8 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
         fullscreenControl: false
       });
 
-<<<<<<< HEAD
-      this.markerCluster = this.addPlaces(map, places);
-=======
-      this.addPlaces(map);
+      this.addPlaces(map, this.places);
       this.addRoute(map);
->>>>>>> master
       this.map = map;
     }
   }
