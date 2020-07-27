@@ -35,6 +35,7 @@ export class MapPageComponent implements OnInit, OnDestroy {
   delivered;
   phases = [];
   deliverDate;
+  loading = false;
 
   constructor(
     private rx: NgRedux<IAppState>,
@@ -72,6 +73,7 @@ export class MapPageComponent implements OnInit, OnDestroy {
       status: { $nin: [OrderStatus.BAD, OrderStatus.DELETED, OrderStatus.TEMP] }
     };
     // const fields = ['code', 'clientName', 'merchantName', 'status', 'client', 'note', 'items'];
+    this.loading = true;
     this.orderSvc.getRoute(this.deliverDate, driverId).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
       // const rs = r.data.routes.find(r => r.driverId === this.account._id);
       const route = data.routes && data.routes.length > 0 ? data.routes[0].route : []; // rs ? rs.route : [];
@@ -80,6 +82,9 @@ export class MapPageComponent implements OnInit, OnDestroy {
         const pickups = ['所有订单', '10:00', '11:20']; // this.orderSvc.getPickupTimes(orders);
         const phases = [];
         let os1;
+
+        this.loading = false;
+        
         pickups.map(pickup => {
           if (pickup === '所有订单') {
             os1 = orders;
