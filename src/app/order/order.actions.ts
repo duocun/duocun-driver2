@@ -6,3 +6,6 @@
 //     static CLEAR_ORDER = 'CLEAR_ORDER';
 // }
 
+export class RouteActions {
+    static SET_ROUTE = 'SET_ROUTE';
+}

@@ -1,10 +1,18 @@
+import { RouteActions } from './order.actions';
 
 export interface IOrderAction {
   type: string;
   payload: any;
 }
 
-
+export const routeReducer = (state: any[] = [], action: any) => {
+  switch (action.type) {
+    case RouteActions.SET_ROUTE:
+      return action.payload;
+    default:
+      return state;
+  }
+}
 
 // export function cartReducer(state: IOrder = { }, action: any) {
 //   if (action.payload) {

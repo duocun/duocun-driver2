@@ -21,7 +21,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
-import { MatSelectModule, MatButtonToggleModule } from '../../../node_modules/@angular/material';
+import { MatSelectModule, MatButtonToggleModule, MatFormFieldModule, MatInputModule } from '../../../node_modules/@angular/material';
 
 import { TransactionService } from '../transaction/transaction.service';
 import { ReceiveCashDialogComponent } from './receive-cash-dialog/receive-cash-dialog.component';
@@ -38,6 +38,8 @@ import { PickupService } from './pickup.service';
     CommonModule,
     MatMomentDateModule,
     MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatTabsModule,
     MatExpansionModule,
     MatSlideToggleModule,

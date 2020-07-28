@@ -58,11 +58,17 @@ export class HomeComponent implements OnInit, OnDestroy {
     const self = this;
     self.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
       const account = data;
-      self.rx.dispatch({ type: AccountActions.UPDATE, payload: account });
       if (account) {
+        self.rx.dispatch({ type: AccountActions.UPDATE, payload: account });
         const tokenId: string = this.authSvc.getAccessTokenId();
         this.authSvc.setAccessTokenId(tokenId);
-        self.loginSuccessHandler(account);
+        const roles = account.roles;
+        if (roles && roles.length > 0 && roles.indexOf(Role.DRIVER) !== -1) {
+          this.rx.dispatch({ type: PageActions.SET_PAGE, payload: 'pickup'});
+          this.router.navigate(['order/pickup']);
+        } else { // not authorized for opreration merchant
+          this.router.navigate(['account/setting'], { queryParams: { merchant: false } });
+        }
       } else { // not login
         self.router.navigate(['account/login']);
       }
@@ -71,15 +77,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  loginSuccessHandler(account: Account) {
-    const roles = account.roles;
-    if (roles && roles.length > 0 && roles.indexOf(Role.DRIVER) !== -1) {
-      this.rx.dispatch({ type: PageActions.SET_PAGE, payload: 'pickup'});
-      this.router.navigate(['order/pickup']);
-    } else { // not authorized for opreration merchant
-      this.router.navigate(['account/setting'], { queryParams: { merchant: false } });
-    }
-  }
 
   wechatLoginHandler(data: any) {
     const self = this;

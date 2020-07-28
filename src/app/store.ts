@@ -9,7 +9,7 @@ import { pageReducer, DEFAULT_PAGE } from './main/main.reducers';
 import { commandReducer, ICommand } from './shared/command.reducers';
 import { IDelivery } from './delivery/delivery.model';
 import { deliveryReducer, DEFAULT_DELIVERY, deliverDateReducer, DEFAULT_DELIVER_DATE } from './delivery/delivery.reducer';
-
+import { routeReducer } from './order/order.reducers';
 import { IContact } from './contact/contact.model';
 import { contactReducer } from './contact/contact.reducer';
 import { restaurantReducer } from './restaurant/restaurant.reducer';
@@ -27,6 +27,7 @@ export interface IAppState {
     restaurant: IMerchant;
     delivery: IDelivery;
     contact: IContact;
+    route: any[];
 }
 
 export const INITIAL_STATE: IAppState = {
@@ -40,6 +41,7 @@ export const INITIAL_STATE: IAppState = {
     restaurant: null,
     delivery: DEFAULT_DELIVERY,
     contact: null,
+    route: []
 };
 
 // export function rootReducer(last:IAppState, action:Action):IAppState{
@@ -62,5 +64,6 @@ export const rootReducer = combineReducers({
     // deliveryTime: deliveryTimeReducer,
     restaurant: restaurantReducer,
     delivery: deliveryReducer,
-    contact: contactReducer
+    contact: contactReducer,
+    route: routeReducer
 });

@@ -18,6 +18,9 @@ import { PickupService } from '../pickup.service';
 import { NgRedux } from '../../../../node_modules/@angular-redux/store';
 import { IAppState } from '../../store';
 import { DeliveryActions } from '../../delivery/delivery.actions';
+import { IAccount } from '../../account/account.model';
+import { AccountActions } from '../../account/account.actions';
+import { RouteActions } from '../order.actions';
 
 
 @Component({
@@ -38,7 +41,8 @@ export class PickupPageComponent implements OnInit, OnDestroy {
   deliverDate;
   productGroups;
   PaymentMethod = PaymentMethod;
-
+  route = [];
+  loading = false;
   constructor(
     private fb: FormBuilder,
     private merchantSvc: MerchantService,
@@ -53,34 +57,71 @@ export class PickupPageComponent implements OnInit, OnDestroy {
   ) {
     this.dateForm = this.fb.group({ date: [''] });
 
+    this.rx.select('account').pipe(takeUntil(this.onDestroy$)).subscribe((account: IAccount) => {
+      this.account = account;
+    });
+
     this.rx.select('deliverDate').pipe(takeUntil(this.onDestroy$)).subscribe((d: string) => {
       this.deliverDate = d;
-      this.date.setValue(d);
-      if (this.account) {
-        this.reload(this.pickup, d, OrderType.GROCERY).then(() => {
+      this.date.setValue(d); // change form value
+    });
 
-        });
-      }
+    this.rx.select('route').pipe(takeUntil(this.onDestroy$)).subscribe((d: any) => {
+      this.route = d;
     });
   }
 
   get date() { return this.dateForm.get('date'); }
 
-  onDateChange(type: string, event: MatDatepickerInputEvent<Date>) {
+  onDeliverDateChange(type: string, event: MatDatepickerInputEvent<Date>) {
+    const self = this;
     const deliverDate = moment(event.value).format('YYYY-MM-DD');
     this.rx.dispatch({ type: DeliveryActions.SET_DELIVER_DATE, payload: deliverDate });
-    const date = moment(event.value).set({ hour: 10, minute: 0, second: 0, millisecond: 0 });
-    this.date.setValue(date);
+    // const date = moment(event.value).set({ hour: 10, minute: 0, second: 0, millisecond: 0 });
+    
+    if (this.account) {
+      this.reload(this.pickup, deliverDate, OrderType.GROCERY).then(() => {
+        // pass
+        const driverId = self.account._id;
+        this.orderSvc.getRoute(this.deliverDate, driverId).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+          // const rs = r.data.routes.find(r => r.driverId === this.account._id);
+          const route = data.routes && data.routes.length > 0 ? data.routes[0].route : []; // rs ? rs.route : [];
+          this.rx.dispatch({ type: RouteActions.SET_ROUTE, payload: route });
+        });
+      });
+    }
   }
 
   ngOnInit() {
-    this.mount(OrderType.GROCERY, this.deliverDate).then((account) => {
-      if (account) {
-        this.groups = this.groupByMerchants(this.orders);
-      } else {
-        this.router.navigate(['account/setting'], { queryParams: { merchant: false } }); // fix me
+    if(this.account){
+      if(!(this.route && this.route.length >0)){
+        const driverId = this.account._id;
+        this.loading = true;
+        this.orderSvc.getRoute(this.deliverDate, driverId).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+          this.loading = false;
+          const route = data.routes && data.routes.length > 0 ? data.routes[0].route : []; // rs ? rs.route : [];
+          this.rx.dispatch({ type: RouteActions.SET_ROUTE, payload: route });
+        });
       }
-    });
+
+      this.mount(this.account, OrderType.GROCERY, this.deliverDate).then((account) => {
+        if (account) {
+          this.groups = this.groupByMerchants(this.orders);
+        } else {
+          this.router.navigate(['account/setting'], { queryParams: { merchant: false } }); // fix me
+        }
+      });
+    }else{
+      const self = this;
+      this.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+        const account = data;
+        if (account) {
+          self.rx.dispatch({ type: AccountActions.UPDATE, payload: account });
+        }else{
+          this.router.navigate(['account/login']);
+        }
+      });
+    }
   }
 
   ngOnDestroy() {
@@ -106,46 +147,43 @@ export class PickupPageComponent implements OnInit, OnDestroy {
     return date + 'T15:00:00.000Z';
   }
 
-  mount(type, deliverDate) {
+  mount(account, type, deliverDate) {
     const self = this;
     const pickupTime = this.pickup;
     // tslint:disable-next-line:no-shadowed-variable
     return new Promise((resolve, reject) => {
       // const status = DriverStatus.ACTIVE;
-      this.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe(d => {
-        self.account = d.data;
+      if (account) {
+        // const q = { status: MerchantStatus.ACTIVE, type: { $in: [MerchantType.RESTAURANT, MerchantType.GROCERY] } };
+        // self.merchantSvc.find(q).pipe(takeUntil(this.onDestroy$)).subscribe((rs: any) => {
+        //   self.merchants = rs.data;
 
-        if (self.account) {
-          const q = { status: MerchantStatus.ACTIVE, type: { $in: [MerchantType.RESTAURANT, MerchantType.GROCERY] } };
-          self.merchantSvc.find(q).pipe(takeUntil(this.onDestroy$)).subscribe((rs: any) => {
-            self.merchants = rs.data;
 
-            const delivered = this.getDelivered(deliverDate); // this.getDateRange(this.deliverDate);
-            const driverId = self.account._id;
-            const qOrder = {
-              // pickupTime,
-              driverId,
-              delivered,
-              status: { $nin: [OrderStatus.BAD, OrderStatus.DELETED, OrderStatus.TEMP] }
-            };
-            this.orderSvc.find(qOrder).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
-              const orders = data;
-              const qPickup = { delivered, driverId };
-              this.pickupSvc.find(qPickup).pipe(takeUntil(this.onDestroy$)).subscribe((r: any) => {
-                const pickups = r.data;
-                // const groups = this.groupByMerchants(orders);
-                const productGroups = this.groupByProduct(pickups);
-                this.productGroups = productGroups;
-                this.orders = [...orders];
-                this.pickups = this.getPickupTimeList();
-                resolve(self.account);
-              });
+          const delivered = this.getDelivered(deliverDate); // this.getDateRange(this.deliverDate);
+          const driverId = account._id;
+          const qOrder = {
+            // pickupTime,
+            driverId,
+            delivered,
+            status: { $nin: [OrderStatus.BAD, OrderStatus.DELETED, OrderStatus.TEMP] }
+          };
+          this.orderSvc.find(qOrder).pipe(takeUntil(this.onDestroy$)).subscribe(({ data }) => {
+            const orders = data;
+            const qPickup = { delivered, driverId };
+            this.pickupSvc.find(qPickup).pipe(takeUntil(this.onDestroy$)).subscribe((r: any) => {
+              const pickups = r.data;
+              // const groups = this.groupByMerchants(orders);
+              const productGroups = this.groupByProduct(pickups);
+              this.productGroups = productGroups;
+              this.orders = [...orders];
+              this.pickups = this.getPickupTimeList();
+              resolve(account);
             });
           });
-        } else { // not authorized for opreration merchant
-          resolve();
-        }
-      });
+        // });
+      } else { // not authorized for opreration merchant
+        resolve();
+      }
     });
   }
 
@@ -161,7 +199,7 @@ export class PickupPageComponent implements OnInit, OnDestroy {
           type,
           status: { $nin: [OrderStatus.BAD, OrderStatus.DELETED, OrderStatus.TEMP] }
         };
-        this.orderSvc.find(orderQuery).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+        this.orderSvc.find(orderQuery).pipe(takeUntil(this.onDestroy$)).subscribe(({ data }) => {
           const orders = data;
           const delivered = this.getDelivered(this.deliverDate); // this.getDateRange(deliverDate);
           const qPickup = { delivered, driverId };
@@ -200,7 +238,7 @@ export class PickupPageComponent implements OnInit, OnDestroy {
 
     if (pickups && pickups.length > 0) {
       pickups.forEach((pickup: IPickup) => {
-          productMap[pickup.productId] = pickup;
+        productMap[pickup.productId] = pickup;
       });
     }
 

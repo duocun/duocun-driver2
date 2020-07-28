@@ -36,6 +36,7 @@ export class MapPageComponent implements OnInit, OnDestroy {
   phases = [];
   deliverDate;
   loading = false;
+  route = [];
 
   constructor(
     private rx: NgRedux<IAppState>,
@@ -46,6 +47,10 @@ export class MapPageComponent implements OnInit, OnDestroy {
 
     this.rx.select('deliverDate').pipe(takeUntil(this.onDestroy$)).subscribe((d: string) => {
       this.deliverDate = d;
+    });
+
+    this.rx.select('route').pipe(takeUntil(this.onDestroy$)).subscribe((d: any) => {
+      this.route = d;
     });
   }
 
@@ -74,9 +79,7 @@ export class MapPageComponent implements OnInit, OnDestroy {
     };
     // const fields = ['code', 'clientName', 'merchantName', 'status', 'client', 'note', 'items'];
     this.loading = true;
-    this.orderSvc.getRoute(this.deliverDate, driverId).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
-      // const rs = r.data.routes.find(r => r.driverId === this.account._id);
-      const route = data.routes && data.routes.length > 0 ? data.routes[0].route : []; // rs ? rs.route : [];
+
       this.orderSvc.find(orderQuery).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
         const orders = data;
         const pickups = ['所有订单', '10:00', '11:20']; // this.orderSvc.getPickupTimes(orders);
@@ -116,12 +119,11 @@ export class MapPageComponent implements OnInit, OnDestroy {
             });
           });
 
-          phases.push({ pickup, places, route });
+          phases.push({ pickup, places, route: self.route });
         });
 
         self.phases = phases;
       });
-    });
   }
 
 }
