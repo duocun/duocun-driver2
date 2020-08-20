@@ -1,13 +1,13 @@
 language: node_js
 node_js:
- - "14.8.0"
+    - "14.8.0"
  
-cache:
- directories:
-   - node_modules
+# cache:
+#     directories:
+#         - node_modules
  
 script:
- - echo "skipping tests"
+    - echo "skipping tests"
  # - npm run test
  # - npm run build
  
@@ -21,16 +21,16 @@ script:
 #   local_dir: build
  
 before_deploy:
- - npm run build
- 
+  - npm run build
+
 deploy:
- - provider: s3
-   access_key_id: $AWS_ACCESS_KEY_ID
-   secret_access_key: $AWS_SECRET_ACCESS_KEY
-   skip_cleanup: true
-   bucket: "driver.duocun.ca"
-   region: us-east-1
-   local_dir: dist
-   on:
-     repo: duocun/duocun-driver2
-     branch: master
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    skip_cleanup: true
+    bucket: "driver.duocun.ca"
+    region: us-east-1
+    local_dir: dist
+    on:
+        repo: duocun/duocun-driver2
+        branch: master
