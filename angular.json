@@ -4,19 +4,28 @@
   "newProjectRoot": "projects",
   "projects": {
     "duocun": {
+      "i18n": {
+        "locales": {
+          "zh-Hans": {
+            "translation": "src/locale/messages.zh-Hans.xlf",
+            "baseHref": ""
+          }
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
       "prefix": "app",
       "schematics": {
         "@schematics/angular:component": {
-          "styleext": "scss"
+          "style": "scss"
         }
       },
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -36,6 +45,12 @@
           },
           "configurations": {
             "production": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -54,9 +69,14 @@
             },
             "zh-Hans":{
               "aot":true,
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "outputPath": "dist/duocun-zh-Hans",
               "i18nFile": "src/locale/messages.zh-Hans.xlf",
-              "i18nFormat": "xlf",
               "i18nLocale": "zh-Hans",
               "i18nMissingTranslation": "error"
             }

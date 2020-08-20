@@ -26,39 +26,39 @@ const appRoutes: Routes = [
     // { path: 'restaurants/:id', component: RestaurantDetailPageComponent},
     {
       path: 'restaurant',
-      loadChildren: './restaurant/restaurant.module#RestaurantModule'
+      loadChildren: () => import('./restaurant/restaurant.module').then(m => m.RestaurantModule)
     },
     {
       path: 'product',
-      loadChildren: './product/product.module#ProductModule'
+      loadChildren: () => import('./product/product.module').then(m => m.ProductModule)
     },
     {
       path: 'order',
-      loadChildren: './order/order.module#OrderModule'
+      loadChildren: () => import('./order/order.module').then(m => m.OrderModule)
     },
     {
       path: 'delivery',
-      loadChildren: './delivery/delivery.module#DeliveryModule'
+      loadChildren: () => import('./delivery/delivery.module').then(m => m.DeliveryModule)
     },
     {
       path: 'contact',
-      loadChildren: './contact/contact.module#ContactModule'
+      loadChildren: () => import('./contact/contact.module').then(m => m.ContactModule)
     },
     {
       path: 'account',
-      loadChildren: './account/account.module#AccountModule'
+      loadChildren: () => import('./account/account.module').then(m => m.AccountModule)
     },
     {
       path: 'payment',
-      loadChildren: './payment/payment.module#PaymentModule'
+      loadChildren: () => import('./payment/payment.module').then(m => m.PaymentModule)
     },
     {
       path: 'main',
-      loadChildren: './main/main.module#MainModule'
+      loadChildren: () => import('./main/main.module').then(m => m.MainModule)
     },
     {
       path: '',
-      loadChildren: './main/main.module#MainModule'
+      loadChildren: () => import('./main/main.module').then(m => m.MainModule)
     },
 ];
 
