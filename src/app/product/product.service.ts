@@ -14,7 +14,6 @@ import { EntityService } from '../entity.service';
 import { AuthService } from '../account/auth.service';
 
 const APP = environment.APP;
-const API_URL = environment.API_URL;
 
 @Injectable({
   providedIn: 'root'

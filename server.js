@@ -4,7 +4,7 @@ const path = require('path')
 const fs = require('fs');
 const cfg = JSON.parse(fs.readFileSync('../duocun.cfg.json','utf8'));
 const APP_SERVER = cfg.DRIVER_SERVER;
-
+const SVC_PORT = process.env.SVC_PORT || APP_SERVER.PORT;
 const app = express()
 
 
@@ -25,9 +25,9 @@ app.use(express.static(__dirname + '/dist'));
 //     res.sendFile(path.join(__dirname, '/dist/index.html'));
 // });
 //app.listen(SERVER_PORT, () => console.log('Server setup'))
-app.set('port', process.env.PORT || APP_SERVER.PORT)
+app.set('port', SVC_PORT)
 
 var server = http.createServer(app)
 server.listen(app.get('port'), function () {
-  console.log('Express server listening on port ' + APP_SERVER.PORT)
+  console.log('Express server listening on port ' + SVC_PORT)
 })
