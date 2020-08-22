@@ -1,11 +1,11 @@
 <div class="page">
   <app-progress-spinner *ngIf="loading"></app-progress-spinner>
   <div class="row deliver-date-row">送货日期: {{deliverDate}}</div>
-  <mat-tab-group mat-align-tabs="center">
-    <mat-tab label="{{phase.pickup}}" *ngFor="let phase of phases">
+  <!-- <mat-tab-group mat-align-tabs="center">
+    <mat-tab label="{{phase.pickup}}" *ngFor="let phase of phases"> -->
       <div class="map-block" *ngIf="phase && phase.places && phase.places.length>0">
         <app-map [center]="currLocation" [zoom]="11" [places]="phase.places" [pickup]="phase.pickup" [route]="phase.route"></app-map>
       </div>
-    </mat-tab>
-  </mat-tab-group>
+    <!-- </mat-tab>
+  </mat-tab-group> -->
 </div>

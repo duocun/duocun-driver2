@@ -34,6 +34,7 @@ export class MapPageComponent implements OnInit, OnDestroy {
   account;
   delivered;
   phases = [];
+  phase;
   deliverDate;
   loading = false;
   route = [];
@@ -82,7 +83,7 @@ export class MapPageComponent implements OnInit, OnDestroy {
 
       this.orderSvc.find(orderQuery).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
         const orders = data;
-        const pickups = ['所有订单', '10:00', '11:20']; // this.orderSvc.getPickupTimes(orders);
+        const pickups = ['所有订单'];// , '10:00', '11:20']; // this.orderSvc.getPickupTimes(orders);
         const phases = [];
         let os1;
 
@@ -123,6 +124,9 @@ export class MapPageComponent implements OnInit, OnDestroy {
         });
 
         self.phases = phases;
+
+
+        self.phase = phases[0];
       });
   }
 
