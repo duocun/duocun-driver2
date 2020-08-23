@@ -2,7 +2,12 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Subject } from '../../../../node_modules/rxjs';
 import { takeUntil } from '../../../../node_modules/rxjs/operators';
 import * as moment from 'moment';
-import { MatTableDataSource, MatPaginator, MatSort } from '../../../../node_modules/@angular/material';
+
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort} from '@angular/material/sort';
+
+
 import { ISalaryData } from '../../payment/payment.model';
 import { AccountService } from '../../account/account.service';
 import { Role } from '../../account/account.model';

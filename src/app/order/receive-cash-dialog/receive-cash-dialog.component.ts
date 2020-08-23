@@ -1,7 +1,10 @@
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { NgRedux } from '../../../../node_modules/@angular-redux/store';
 import { IAppState } from '../../store';
-import { MatDialogRef, MAT_DIALOG_DATA, MatSnackBar, MatDialog } from '../../../../node_modules/@angular/material';
+
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 import { OrderService } from '../order.service';
 import { takeUntil } from '../../../../node_modules/rxjs/operators';
 import { Subject } from '../../../../node_modules/rxjs';

@@ -16,7 +16,7 @@ import { AuthService } from './auth.service';
 import { AccountPageComponent } from './account-page/account-page.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MerchantService } from '../restaurant/restaurant.service';
-import { MatSnackBarModule } from '../../../node_modules/@angular/material';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { OrderService } from '../order/order.service';
 
 @NgModule({

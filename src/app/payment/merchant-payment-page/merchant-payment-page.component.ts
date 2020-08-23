@@ -5,7 +5,12 @@ import { takeUntil } from '../../../../node_modules/rxjs/operators';
 import { Role, IAccount } from '../../account/account.model';
 import { IMerchantPayment, IMerchantPaymentData, IMerchantBalance } from '../payment.model';
 import { FormBuilder, Validators } from '../../../../node_modules/@angular/forms';
-import { MatSnackBar, MatTableDataSource, MatSort } from '../../../../node_modules/@angular/material';
+
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSort} from '@angular/material/sort';
+
+
 import * as moment from 'moment';
 import { TransactionService } from '../../transaction/transaction.service';
 import { ITransaction, TransactionAction } from '../../transaction/transaction.model';
@@ -87,7 +92,7 @@ export class MerchantPaymentPageComponent implements OnInit, OnDestroy {
     };
 
     this.transactionSvc.save(t).pipe(takeUntil(this.onDestroy$)).subscribe(() => {
-      // this.snackBar.open('', '已付款 $' + amount + '给商家' + merchantAccount.username, { duration: 1500 });
+      this.snackBar.open('', '已付款 $' + amount + '给商家' + merchantAccount.username, { duration: 1500 });
       this.reload(merchantAccount._id);
     });
   }

@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, OnChanges, ViewChild, ElementRef, OnDestroy } from '@angular/core';
-import { MatDialog } from '../../../../node_modules/@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+
+
 import { takeUntil } from '../../../../node_modules/rxjs/operators';
 import { Subject } from '../../../../node_modules/rxjs';
 import { DeliveryDialogComponent } from '../../order/delivery-dialog/delivery-dialog.component';

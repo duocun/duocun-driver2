@@ -21,7 +21,10 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
-import { MatSelectModule, MatButtonToggleModule, MatFormFieldModule, MatInputModule } from '../../../node_modules/@angular/material';
+import { MatSelectModule} from '@angular/material/select';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatFormFieldModule} from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 import { TransactionService } from '../transaction/transaction.service';
 import { ReceiveCashDialogComponent } from './receive-cash-dialog/receive-cash-dialog.component';

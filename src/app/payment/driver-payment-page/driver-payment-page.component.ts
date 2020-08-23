@@ -4,7 +4,11 @@ import { Subject } from '../../../../node_modules/rxjs';
 import { takeUntil, take } from '../../../../node_modules/rxjs/operators';
 import { Role, IAccount } from '../../account/account.model';
 // import { IDriverPayment, IDriverPaymentData, IDriverBalance } from '../../payment/payment.model';
-import { MatSnackBar, MatPaginator, MatSort } from '../../../../node_modules/@angular/material';
+
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort} from '@angular/material/sort';
+
 import * as moment from 'moment';
 
 import { MatTableDataSource } from '@angular/material/table';

@@ -6,7 +6,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { takeUntil } from '../../../../node_modules/rxjs/operators';
 import { Subject } from '../../../../node_modules/rxjs';
 import { PageActions } from '../../main/main.actions';
-import { MatSnackBar } from '../../../../node_modules/@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormBuilder, Validators } from '../../../../node_modules/@angular/forms';
 import { TransactionService } from '../../transaction/transaction.service';
 import * as moment from 'moment';
