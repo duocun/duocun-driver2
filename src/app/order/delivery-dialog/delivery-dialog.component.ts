@@ -260,7 +260,7 @@ export class DeliveryDialogComponent implements OnInit, OnDestroy {
       const client = data[0];
       // if (client && client.attributes && client.attributes.length > 0) {
       this.orderSvc.update(order._id, { status: OrderStatus.DONE }).pipe(takeUntil(this.onDestroy$)).subscribe(() => {
-        this.snackBar.open('', '此订单已完成', { duration: 1800 });
+        // this.snackBar.open('', '此订单已完成', { duration: 1800 });
         this.reload(this.account, this.data.pickup, this.data.place).then(group => {
           // if finish all delivery in this address, close the dialog; otherwise keep the dialog open
           // this.dialogRef.close(group);
@@ -291,7 +291,7 @@ export class DeliveryDialogComponent implements OnInit, OnDestroy {
       const info = this.forms[order._id].get('info').value;
       const data = { info: info };
       this.accountSvc.update(clientId, data).pipe(takeUntil(this.onDestroy$)).subscribe(() => {
-        this.snackBar.open('', '客户信息已经更新', { duration: 1800 });
+        // this.snackBar.open('', '客户信息已经更新', { duration: 1800 });
         this.bAllowSave[order._id] = false;
       });
     }
@@ -309,7 +309,7 @@ export class DeliveryDialogComponent implements OnInit, OnDestroy {
     if (!bOpened) {
       const attrs = client.attributes ? client.attributes : [];
       this.accountSvc.update(client._id, { attributes: attrs }).pipe(takeUntil(this.onDestroy$)).subscribe(() => {
-        this.snackBar.open('', client.username + '属性已更新', { duration: 1000 });
+        // this.snackBar.open('', client.username + '属性已更新', { duration: 1000 });
 
         // const client = this.clients.find(c => c._id === d._id);
         // client.attributes = attrs;
@@ -324,7 +324,7 @@ export class DeliveryDialogComponent implements OnInit, OnDestroy {
       this.accountSvc.sendClientMsg(order.type, order.clientPhone, 'zh')
         .pipe(takeUntil(this.onDestroy$)).subscribe(() => {
           this.bAllowMsg = false;
-          this.snackBar.open('', '消息已发送', { duration: 1000 });
+          // this.snackBar.open('', '消息已发送', { duration: 1000 });
         });
     }
   }

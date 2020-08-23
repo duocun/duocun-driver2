@@ -337,7 +337,7 @@ export class PickupPageComponent implements OnInit, OnDestroy {
   onReload() {
     this.reload(this.pickup, this.deliverDate, OrderType.GROCERY).then((r) => {
       if (r) {
-        this.snackBar.open('', '订单已更新', { duration: 1800 });
+        // this.snackBar.open('', '订单已更新', { duration: 1800 });
       }
     });
   }
@@ -347,7 +347,7 @@ export class PickupPageComponent implements OnInit, OnDestroy {
     if (order.status !== OrderStatus.DONE) {
       const data = { status: order.status === OrderStatus.LOADED ? OrderStatus.NEW : OrderStatus.LOADED };
       this.orderSvc.update(order._id, data).pipe(takeUntil(this.onDestroy$)).subscribe(() => {
-        this.snackBar.open('', '取餐状态已更改', { duration: 1000 });
+        // this.snackBar.open('', '取餐状态已更改', { duration: 1000 });
         this.reload(this.pickup, this.deliverDate, OrderType.GROCERY).then((r: any) => {
           // this.orders = r.orders;
           // this.groups = r.groups;
@@ -370,7 +370,7 @@ export class PickupPageComponent implements OnInit, OnDestroy {
       const data = { ...row, status };
       delete data._id;
       this.pickupSvc.update(pickupId, data).pipe(takeUntil(this.onDestroy$)).subscribe(() => {
-        this.snackBar.open('', '取货状态已更改', { duration: 1000 });
+        // this.snackBar.open('', '取货状态已更改', { duration: 1000 });
         this.reload(this.pickup, this.deliverDate, OrderType.GROCERY).then((r: any) => {
           // this.orders = r.orders;
           // this.groups = r.groups;
@@ -381,7 +381,7 @@ export class PickupPageComponent implements OnInit, OnDestroy {
       delete row._id;
       const data = { ...row, status };
       this.pickupSvc.save(data).pipe(takeUntil(this.onDestroy$)).subscribe(() => {
-        this.snackBar.open('', '取货状态已更改', { duration: 1000 });
+        // this.snackBar.open('', '取货状态已更改', { duration: 1000 });
         this.reload(this.pickup, this.deliverDate, OrderType.GROCERY).then((r: any) => {
           // this.orders = r.orders;
           // this.groups = r.groups;

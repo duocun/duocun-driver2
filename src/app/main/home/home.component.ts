@@ -86,13 +86,13 @@ export class HomeComponent implements OnInit, OnDestroy {
       if (account) {
         self.account = account;
 
-        // this.snackBar.open('', '微信登录成功。', {
+        // // this.snackBar.open('', '微信登录成功。', {
         //   duration: 1000
         // });
         // self.loading = false;
         // self.init(account);
       } else {
-        // this.snackBar.open('', '微信登录失败。', {
+        // // this.snackBar.open('', '微信登录失败。', {
         //   duration: 1000
         // });
       }
