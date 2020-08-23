@@ -69,9 +69,9 @@ export class ReceiveCashDialogComponent implements OnInit, OnDestroy {
     const orderId = this.data.orderId;
 
     if (this.data) {
-      this.orderSvc.find({ _id: orderId }).pipe(takeUntil(self.onDestroy$)).subscribe(({data}) => {
+      this.orderSvc.find({ _id: orderId }).pipe(takeUntil(self.onDestroy$)).subscribe((data) => {
         this.order = data[0];
-        this.accountSvc.find({ _id: this.order.clientId }).pipe(takeUntil(self.onDestroy$)).subscribe(({data}) => {
+        this.accountSvc.find({ _id: this.order.clientId }).pipe(takeUntil(self.onDestroy$)).subscribe((data) => {
           const balance = data[0].balance;
           this.receivable = balance < 0 ? -balance : 0;
         });
@@ -103,7 +103,7 @@ export class ReceiveCashDialogComponent implements OnInit, OnDestroy {
           const orderId = this.data.orderId;
           const toId = this.data.accountId;
           const toName = this.data.accountName;
-          this.orderSvc.payOrder(toId, toName, +received, orderId, note).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+          this.orderSvc.payOrder(toId, toName, +received, orderId, note).pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
             this.orderSvc.update(orderId, {status: OrderStatus.DONE}).pipe(takeUntil(this.onDestroy$)).subscribe(() => {
               this.dialogRef.close(data);
               this.rx.dispatch({ type: CommandActions.SEND, payload: { name: 'reload-orders', args: null } }); // refresh order history

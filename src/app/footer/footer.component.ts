@@ -42,7 +42,7 @@ export class FooterComponent implements OnInit, OnDestroy {
       if (account) {
         self.account = account;
       } else {
-        self.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+        self.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
           self.account = data;
         });
       }

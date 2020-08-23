@@ -83,9 +83,9 @@ export class PickupPageComponent implements OnInit, OnDestroy {
       this.reload(this.pickup, deliverDate, OrderType.GROCERY).then(() => {
         // pass
         const driverId = self.account._id;
-        this.orderSvc.getRoute(this.deliverDate, driverId).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+        this.orderSvc.getRoute(this.deliverDate, driverId).pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
           // const rs = r.data.routes.find(r => r.driverId === this.account._id);
-          const route = data.routes && data.routes.length > 0 ? data.routes[0].route : []; // rs ? rs.route : [];
+          const route = []; // fix me data.routes && data.routes.length > 0 ? data.routes[0].route : []; // rs ? rs.route : [];
           this.rx.dispatch({ type: RouteActions.SET_ROUTE, payload: route });
         });
       });
@@ -97,9 +97,9 @@ export class PickupPageComponent implements OnInit, OnDestroy {
       if(!(this.route && this.route.length >0)){
         const driverId = this.account._id;
         this.loading = true;
-        this.orderSvc.getRoute(this.deliverDate, driverId).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+        this.orderSvc.getRoute(this.deliverDate, driverId).pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
           this.loading = false;
-          const route = data.routes && data.routes.length > 0 ? data.routes[0].route : []; // rs ? rs.route : [];
+          const route = []; // fix me data.routes && data.routes.length > 0 ? data.routes[0].route : []; // rs ? rs.route : [];
           this.rx.dispatch({ type: RouteActions.SET_ROUTE, payload: route });
         });
       }
@@ -113,7 +113,7 @@ export class PickupPageComponent implements OnInit, OnDestroy {
       });
     }else{
       const self = this;
-      this.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+      this.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
         const account = data;
         if (account) {
           self.rx.dispatch({ type: AccountActions.UPDATE, payload: account });
@@ -167,7 +167,7 @@ export class PickupPageComponent implements OnInit, OnDestroy {
             delivered,
             status: { $nin: [OrderStatus.BAD, OrderStatus.DELETED, OrderStatus.TEMP] }
           };
-          this.orderSvc.find(qOrder).pipe(takeUntil(this.onDestroy$)).subscribe(({ data }) => {
+          this.orderSvc.find(qOrder).pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
             const orders = data;
             const qPickup = { delivered, driverId };
             this.pickupSvc.find(qPickup).pipe(takeUntil(this.onDestroy$)).subscribe((r: any) => {
@@ -199,7 +199,7 @@ export class PickupPageComponent implements OnInit, OnDestroy {
           type,
           status: { $nin: [OrderStatus.BAD, OrderStatus.DELETED, OrderStatus.TEMP] }
         };
-        this.orderSvc.find(orderQuery).pipe(takeUntil(this.onDestroy$)).subscribe(({ data }) => {
+        this.orderSvc.find(orderQuery).pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
           const orders = data;
           const delivered = this.getDelivered(this.deliverDate); // this.getDateRange(deliverDate);
           const qPickup = { delivered, driverId };

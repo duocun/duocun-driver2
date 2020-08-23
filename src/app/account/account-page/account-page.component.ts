@@ -58,7 +58,7 @@ export class AccountPageComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const self = this;
     this.sub = this.route.queryParams.subscribe(params => {
-      this.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+      this.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
         self.account = data;
       });
     });
@@ -88,7 +88,7 @@ export class AccountPageComponent implements OnInit, OnDestroy {
   }
 
   loadSalary(driverId: string) {
-    this.orderSvc.find({ driverId: driverId }).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+    this.orderSvc.find({ driverId: driverId }).pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
       const orders = data;
       const groups = this.groupBy(orders, 'delivered');
       const salaryItems = [];

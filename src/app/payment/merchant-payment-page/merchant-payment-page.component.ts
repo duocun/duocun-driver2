@@ -48,13 +48,13 @@ export class MerchantPaymentPageComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar
   ) {
     const self = this;
-    self.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+    self.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
       const account = data;
       this.account = account;
       if (account && account.roles) {
         const roles = account.roles;
         if (roles && roles.length > 0 && roles.indexOf(Role.DRIVER) !== -1) {
-          this.accountSvc.find({ type: 'merchant' }).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+          this.accountSvc.find({ type: 'merchant' }).pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
             this.merchantAccounts = data;
           });
         }
@@ -130,7 +130,7 @@ export class MerchantPaymentPageComponent implements OnInit, OnDestroy {
   }
 
   reload(merchantAccountId: string) {
-    this.transactionSvc.getMerchantBalance(merchantAccountId, this.lang).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+    this.transactionSvc.getMerchantBalance(merchantAccountId, this.lang).pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
       const list = data;
       let balance = 0;
       list.map(item => {

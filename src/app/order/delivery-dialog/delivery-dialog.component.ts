@@ -67,7 +67,7 @@ export class DeliveryDialogComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const self = this;
-    this.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+    this.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
       self.account = data;
       if (self.account) {
         const place = self.data.place;
@@ -81,7 +81,7 @@ export class DeliveryDialogComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.accountSvc.getAttributes().pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+    this.accountSvc.getAttributes().pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
       const rs: IAccountAttribute[] = data;
       this.attributes = rs;
     });
@@ -135,7 +135,7 @@ export class DeliveryDialogComponent implements OnInit, OnDestroy {
     };
 
     return new Promise((resolve, reject) => {
-      this.orderSvc.find(orderQuery).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+      this.orderSvc.find(orderQuery).pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
         const orders = data;
         orders.forEach(order => {
           const infoText = order.clientInfo;
@@ -201,7 +201,7 @@ export class DeliveryDialogComponent implements OnInit, OnDestroy {
 
   openReceiveCashDialog(order: IOrder) {
     const clientId = order.clientId;
-    this.accountSvc.find({ _id: clientId }).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+    this.accountSvc.find({ _id: clientId }).pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
       const client = data[0];
       // if (client && client.attributes && client.attributes.length > 0) {
       const orderId = order._id;
@@ -256,7 +256,7 @@ export class DeliveryDialogComponent implements OnInit, OnDestroy {
 
   finishDelivery(order: IOrder) {
     const clientId = order.clientId;
-    this.accountSvc.find({ _id: clientId }).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+    this.accountSvc.find({ _id: clientId }).pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
       const client = data[0];
       // if (client && client.attributes && client.attributes.length > 0) {
       this.orderSvc.update(order._id, { status: OrderStatus.DONE }).pipe(takeUntil(this.onDestroy$)).subscribe(() => {

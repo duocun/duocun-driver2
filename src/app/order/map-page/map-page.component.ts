@@ -58,7 +58,7 @@ export class MapPageComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const self = this;
 
-    this.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+    this.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
       self.account = data;
       self.reload();
     });
@@ -81,7 +81,7 @@ export class MapPageComponent implements OnInit, OnDestroy {
     // const fields = ['code', 'clientName', 'merchantName', 'status', 'client', 'note', 'items'];
     this.loading = true;
 
-      this.orderSvc.find(orderQuery).pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+      this.orderSvc.find(orderQuery).pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
         const orders = data;
         const pickups = ['所有订单'];// , '10:00', '11:20']; // this.orderSvc.getPickupTimes(orders);
         const phases = [];

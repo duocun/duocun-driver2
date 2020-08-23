@@ -56,7 +56,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const self = this;
-    self.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+    self.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
       const account = data;
       if (account) {
         self.rx.dispatch({ type: AccountActions.UPDATE, payload: account });
@@ -81,7 +81,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   wechatLoginHandler(data: any) {
     const self = this;
     self.authSvc.setAccessTokenId(data.id);
-    self.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe(({data}) => {
+    self.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
       const account = data;
       if (account) {
         self.account = account;
