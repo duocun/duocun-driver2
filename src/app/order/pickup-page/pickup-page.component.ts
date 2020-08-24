@@ -86,9 +86,10 @@ export class PickupPageComponent implements OnInit, OnDestroy {
       this.reload(this.pickup, deliverDate, OrderType.GROCERY).then(() => {
         // pass
         const driverId = self.account._id;
-        this.orderSvc.getRoute(this.deliverDate, driverId).pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
+        this.orderSvc.getRoute(this.deliverDate, driverId).pipe(takeUntil(this.onDestroy$)).subscribe((d) => {
           // const rs = r.data.routes.find(r => r.driverId === this.account._id);
-          const route = []; // fix me data.routes && data.routes.length > 0 ? data.routes[0].route : []; // rs ? rs.route : [];
+          const data = d.data;
+          const route = data.routes && data.routes.length > 0 ? data.routes[0].route : []; // rs ? rs.route : [];
           this.rx.dispatch({ type: RouteActions.SET_ROUTE, payload: route });
         });
       });
@@ -100,9 +101,10 @@ export class PickupPageComponent implements OnInit, OnDestroy {
       if(!(this.route && this.route.length >0)){
         const driverId = this.account._id;
         this.loading = true;
-        this.orderSvc.getRoute(this.deliverDate, driverId).pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
+        this.orderSvc.getRoute(this.deliverDate, driverId).pipe(takeUntil(this.onDestroy$)).subscribe((d) => {
           this.loading = false;
-          const route = []; // fix me data.routes && data.routes.length > 0 ? data.routes[0].route : []; // rs ? rs.route : [];
+          const data = d.data;
+          const route = data.routes && data.routes.length > 0 ? data.routes[0].route : []; // rs ? rs.route : [];
           this.rx.dispatch({ type: RouteActions.SET_ROUTE, payload: route });
         });
       }
