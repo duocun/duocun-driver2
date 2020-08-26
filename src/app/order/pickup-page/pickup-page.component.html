@@ -38,7 +38,10 @@
       <div class="row row-product" *ngFor="let pg of productGroups">
         <div class="col-7 text-sm">{{pg.productName}}</div>
         <div class="col-2 text-sm">x{{pg.quantity}}</div>
-        <div class="col-3 col-toggle">
+        <div class="col-3 col-toggle" *ngIf="isDeleted(pg)">
+          因改单已删除
+        </div>
+        <div class="col-3 col-toggle" *ngIf="!isDeleted(pg)">
           <mat-slide-toggle [checked]="isPickedUp(pg)" (change)="onChangePickup($event, pg)">
             <span *ngIf="!isPickedUp(pg)" class="warning">未取</span>
             <span *ngIf="isPickedUp(pg)" class="success">已取</span>

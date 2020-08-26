@@ -366,6 +366,10 @@ export class PickupPageComponent implements OnInit, OnDestroy {
     return row.status === PickupStatus.PICKED_UP;
   }
 
+  isDeleted(row){
+    return row.status === PickupStatus.DELETED;
+  }
+
   // for grocery
   // row --- { driverId, delivered, productName, quantity: 0, status: PickupStatus.UNPICK_UP };
   onChangePickup(event: any, row: any) {
