@@ -17,10 +17,10 @@ export const environment = {
     CLIENT_ID: 'x'
   },
   GOOGLE_ANALYTICS: {
-    CLIENT_ID: 'UA-113187324-2'
+    CLIENT_ID: ''
   },
   STRIPE: {
-    CLIENT_KEY: 'pk_test_RzVW9LLaIZANExpYhNg2x4Zu'
+    CLIENT_KEY: ''
   },
   language: 'zh'
 };

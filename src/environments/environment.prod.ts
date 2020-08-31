@@ -9,13 +9,13 @@ export const environment = {
   APP: 'duocun',
   AUTH_PREFIX: '',
   GOOGLE_MAP: {
-      KEY: 'AIzaSyBotSR2YeQMWKxPl4bN1wuwxNTvtWaT_xc'
+      KEY: ''
   },
   GOOGLE_LOGIN: {
-      CLIENT_ID: '53858676843-kjkp8dt8e01tktpc8pimd3vtlvkcre81.apps.googleusercontent.com'
+      CLIENT_ID: ''
   },
   GOOGLE_ANALYTICS: {
-      CLIENT_ID: 'UA-113187324-2'
+      CLIENT_ID: ''
   },
   STRIPE: {
       CLIENT_KEY: 'x'
