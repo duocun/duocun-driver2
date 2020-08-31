@@ -12,7 +12,7 @@ export const environment = {
       KEY: 'AIzaSyBotSR2YeQMWKxPl4bN1wuwxNTvtWaT_xc'
   },
   GOOGLE_LOGIN: {
-      CLIENT_ID: 'x'
+      CLIENT_ID: '53858676843-kjkp8dt8e01tktpc8pimd3vtlvkcre81.apps.googleusercontent.com'
   },
   GOOGLE_ANALYTICS: {
       CLIENT_ID: 'UA-113187324-2'
