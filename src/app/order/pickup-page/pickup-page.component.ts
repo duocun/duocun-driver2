@@ -174,7 +174,7 @@ export class PickupPageComponent implements OnInit, OnDestroy {
           };
           this.orderSvc.find(qOrder).pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
             const orders = data;
-            const qPickup = { delivered, driverId };
+            const qPickup = { delivered, driverId, status: {$nin: [PickupStatus.DELETED] }};
             this.pickupSvc.find(qPickup).pipe(takeUntil(this.onDestroy$)).subscribe((r: any) => {
               const pickups = r.data;
               // const groups = this.groupByMerchants(orders);
