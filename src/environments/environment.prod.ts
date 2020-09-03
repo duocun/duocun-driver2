@@ -8,17 +8,5 @@ export const environment = {
   MEDIA_URL: window.location.origin + '/media/',
   APP: 'duocun',
   AUTH_PREFIX: '',
-  GOOGLE_MAP: {
-      KEY: ''
-  },
-  GOOGLE_LOGIN: {
-      CLIENT_ID: ''
-  },
-  GOOGLE_ANALYTICS: {
-      CLIENT_ID: ''
-  },
-  STRIPE: {
-      CLIENT_KEY: 'x'
-  },
   language: 'zh'
 };

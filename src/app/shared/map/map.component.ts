@@ -166,6 +166,7 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
       m.setMap(null);
     });
   }
+
   updatePlace(map: any, group: any) {
     const self = this;
 

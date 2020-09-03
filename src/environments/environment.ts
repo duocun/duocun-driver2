@@ -13,14 +13,5 @@ export const environment = {
   MEDIA_URL: 'http://localhost:8000/',
   APP: 'duocun',
   AUTH_PREFIX: '',
-  GOOGLE_LOGIN: {
-    CLIENT_ID: 'x'
-  },
-  GOOGLE_ANALYTICS: {
-    CLIENT_ID: ''
-  },
-  STRIPE: {
-    CLIENT_KEY: ''
-  },
   language: 'zh'
 };
