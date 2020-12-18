@@ -1,0 +1,72 @@
+<div class="page">
+  <app-progress-spinner *ngIf="loading"></app-progress-spinner>
+  <div class="title-row">
+    <span class="title-bg" i18n="@@MyOrder">My Order</span>
+  </div>
+  <div class="page-body">
+
+    <div class="row date-input-block">
+      <form [formGroup]="dateForm">
+        <div class="col-date">
+          <!-- <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Choose a date</mat-label>
+            <input matInput [matDatepicker]="picker">
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+          <button mat-raised-button (click)="picker.open()">Open</button> -->
+          
+          <mat-form-field class="date-input-wrapper" appearance="fill">
+            <mat-label i18n="@@DeliveryDate">Delivery date</mat-label>
+            <input class="date-input" matInput
+            [formControl]="date"
+            [matDatepicker]="picker" 
+            (click)="picker.open()" 
+            (dateChange)="onDeliverDateChange('change', $event)"
+            />
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        </div>
+        <div class="col-refresh">
+          <div class="btn btn-primary" (click)="onReload()">刷新</div>
+        </div>
+      </form>
+    </div>
+
+    <div class="summary" *ngIf="productGroups && productGroups.length > 0">
+      <!-- <div class="title title-sm">取件统计:</div> -->
+      <div class="row row-product" *ngFor="let pg of productGroups">
+        <div class="col-9 text-sm">
+          <span>{{pg.clientName}}: </span>
+          <span style="color: green; font-size: 16px; font-weight: 700;">{{pg.codes.join(', ')}}</span>
+        </div>
+        <div class="col-3 col-toggle" *ngIf="isDeleted(pg)">
+          因改单已删除
+        </div>
+        <div class="col-3 col-toggle" *ngIf="!isDeleted(pg)">
+          <mat-slide-toggle [checked]="isPickedUp(pg)" (change)="onChangePickup($event, pg)">
+            <span *ngIf="!isPickedUp(pg)" class="warning">未取</span>
+            <span *ngIf="isPickedUp(pg)" class="success">已取</span>
+          </mat-slide-toggle>
+        </div>
+        <div class="col-12" *ngFor="let item of pg.items">
+          <div class="row">
+            <!-- <div class="col-12">
+              <span>{{ item.merchantName }} ({{ item.code }})</span>
+            </div> -->
+            <div class="col-12">
+              <div class="row" *ngFor="let p of item.products">
+                <div class="col-9">
+                  <span>{{ p.productName }}</span>
+                </div>
+                <div class="col-3">
+                  <span>x {{ p.quantity }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
