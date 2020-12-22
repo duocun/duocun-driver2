@@ -34,7 +34,9 @@ import { SharedService } from '../shared/shared.service';
 import { LocationService } from '../location/location.service';
 import { DeliveryDialogComponent } from './delivery-dialog/delivery-dialog.component';
 import { PickupPageComponent } from './pickup-page/pickup-page.component';
+import { PickupByOrderPageComponent } from './pickup-by-order-page/pickup-by-order-page.component';
 import { PickupService } from './pickup.service';
+import { PickupByOrderService } from './pickup-by-order.service';
 
 @NgModule({
   imports: [
@@ -70,6 +72,7 @@ import { PickupService } from './pickup.service';
     TransactionService,
     LocationService,
     PickupService,
+    PickupByOrderService,
     SharedService
   ],
   declarations: [
@@ -77,7 +80,8 @@ import { PickupService } from './pickup.service';
     ReceiveCashDialogComponent,
     ClientBalanceDialogComponent,
     DeliveryDialogComponent,
-    PickupPageComponent
+    PickupPageComponent,
+    PickupByOrderPageComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA

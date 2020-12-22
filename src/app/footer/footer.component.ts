@@ -90,6 +90,15 @@ export class FooterComponent implements OnInit, OnDestroy {
     }
   }
 
+  toPickupByOrder() {
+    this.selected = 'pickup-by-order';
+    if (this.account) {
+      this.router.navigate(['order/pickup-by-order']);
+    } else {
+      this.router.navigate(['account/login']);
+    }
+  }
+
   toMap() {
     this.selected = 'map';
     if (this.account) {

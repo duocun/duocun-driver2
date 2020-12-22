@@ -8,7 +8,7 @@ export const environment = {
   API_VERSION: 'api',
   SECURE: window.location.protocol === 'https:',
   API_BASE: window.location.protocol + '//' + window.location.hostname + ':8000',
-  API_URL: 'http://localhost:8001/v1/', //'https://api.duocun.ca/v1/', // 
+  API_URL: 'http://localhost:8000/v1/', //'https://api.duocun.ca/v1/', // 
   APP_URL: window.location.origin,
   MEDIA_URL: 'http://localhost:8000/',
   APP: 'duocun',
