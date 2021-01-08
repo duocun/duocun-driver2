@@ -35,7 +35,10 @@
             <div class="row">
               <div class="col-5 status-col" *ngIf="it.status !== Status.DONE">未送</div>
               <div class="col-5 status-col green" *ngIf="it.status === Status.DONE">已送</div>
-              <div class="col-7 quantity-col" [class.emphasise]="getQuantity(it.order) > 1">x {{getQuantity(it.order)}}件</div>
+              <!-- <div class="col-7 quantity-col" [class.emphasise]="getQuantity(it.order) > 1">
+                x {{getQuantity(it.order)}}件
+              </div> -->
+              <div class="col-7 quantity-col">x {{getQuantity(it.order)}}件</div>
             </div>
           </div>
         </div>
@@ -61,7 +64,7 @@
             </div> -->
             <div *ngIf="it.unit" class="row unit-row">
               <div class="col-3">Unit #</div>
-              <div class="col-9" >{{it.unit}}</div>
+              <div class="col-9">{{it.unit}}</div>
             </div>
           </div>
           <div class="col-6">
@@ -106,15 +109,20 @@
       <div class="row product-block">
         <div class="col-12" *ngIf="it.order.items && it.order.items.length > 0">
           <div *ngFor="let item of it.order.items" class="text-sm row">
-            <div class="col-6 product-col" *ngIf="item" [ngClass]="getProductCssClass(item)">{{item.productName}}</div>
-            <div class="col-3 quantity-col" [class.emphasise]="item.quantity>1">x{{item.quantity}}</div>
+            <div class="col-6 product-col" *ngIf="item && !item.product.isRed" [ngClass]="getProductCssClass(item)">
+              {{item.productName}}</div>
+            <div class="col-6 product-col" *ngIf="item && item.product.isRed" [ngClass]="getProductCssClass(item)"
+              style="color: red; font-weight: 700;">{{item.productName}}</div>
+            <!-- <div class="col-3 quantity-col" [class.emphasise]="item.quantity>1">x{{item.quantity}}</div> -->
+            <div class="col-3 quantity-col">x{{item.quantity}}</div>
           </div>
         </div>
       </div>
 
       <div class="row receivables-row">
         <div class="btn btn-primary" *ngIf="needCollectCash(it)" (click)="openReceiveCashDialog(it.order)">收款</div>
-        <div class="btn btn-primary" *ngIf="!isOrderFinished(it) && !needCollectCash(it)" (click)="finishDelivery(it.order)">完成订单</div>
+        <div class="btn btn-primary" *ngIf="!isOrderFinished(it) && !needCollectCash(it)"
+          (click)="finishDelivery(it.order)">完成订单</div>
       </div>
     </mat-expansion-panel>
   </div>

@@ -36,7 +36,8 @@
     <div class="summary" *ngIf="productGroups && productGroups.length > 0">
       <!-- <div class="title title-sm">取件统计:</div> -->
       <div class="row row-product" *ngFor="let pg of productGroups">
-        <div class="col-7 text-sm">{{pg.productName}}</div>
+        <div class="col-7 text-sm" *ngIf="!pg.productIsRed">{{pg.productName}}</div>
+        <div class="col-7 text-sm" style="color: red; font-weight: 700;" *ngIf="pg.productIsRed">{{pg.productName}}</div>
         <div class="col-2 text-sm">x{{pg.quantity}}</div>
         <div class="col-3 col-toggle" *ngIf="isDeleted(pg)">
           因改单已删除

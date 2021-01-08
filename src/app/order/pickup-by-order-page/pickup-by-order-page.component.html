@@ -14,15 +14,11 @@
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
           <button mat-raised-button (click)="picker.open()">Open</button> -->
-          
+
           <mat-form-field class="date-input-wrapper" appearance="fill">
             <mat-label i18n="@@DeliveryDate">Delivery date</mat-label>
-            <input class="date-input" matInput
-            [formControl]="date"
-            [matDatepicker]="picker" 
-            (click)="picker.open()" 
-            (dateChange)="onDeliverDateChange('change', $event)"
-            />
+            <input class="date-input" matInput [formControl]="date" [matDatepicker]="picker" (click)="picker.open()"
+              (dateChange)="onDeliverDateChange('change', $event)" />
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
@@ -57,10 +53,12 @@
             <div class="col-12">
               <div class="row" *ngFor="let p of item.products">
                 <div class="col-9">
-                  <span>{{ p.productName }}</span>
+                  <span class="text-sm" *ngIf="!p.productIsRed">{{ p.productName }}</span>
+                  <span class="text-sm" style="color: red; font-weight: 700;" *ngIf="p.productIsRed">
+                    {{ p.productName }}</span>
                 </div>
                 <div class="col-3">
-                  <span>x {{ p.quantity }}</span>
+                  <span class="text-sm">x {{ p.quantity }}</span>
                 </div>
               </div>
             </div>

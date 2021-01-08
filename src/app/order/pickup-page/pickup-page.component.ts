@@ -81,7 +81,7 @@ export class PickupPageComponent implements OnInit, OnDestroy {
     const deliverDate = moment(event.value).format('YYYY-MM-DD');
     this.rx.dispatch({ type: DeliveryActions.SET_DELIVER_DATE, payload: deliverDate });
     // const date = moment(event.value).set({ hour: 10, minute: 0, second: 0, millisecond: 0 });
-    
+
     if (this.account) {
       this.reload(this.pickup, deliverDate, OrderType.GROCERY).then(() => {
         // pass
@@ -97,8 +97,8 @@ export class PickupPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    if(this.account){
-      if(!(this.route && this.route.length >0)){
+    if (this.account) {
+      if (!(this.route && this.route.length > 0)) {
         const driverId = this.account._id;
         this.loading = true;
         this.orderSvc.getRoute(this.deliverDate, driverId).pipe(takeUntil(this.onDestroy$)).subscribe((d) => {
@@ -116,13 +116,13 @@ export class PickupPageComponent implements OnInit, OnDestroy {
           this.router.navigate(['account/setting'], { queryParams: { merchant: false } }); // fix me
         }
       });
-    }else{
+    } else {
       const self = this;
       this.accountSvc.getCurrentAccount().pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
         const account = data;
         if (account) {
           self.rx.dispatch({ type: AccountActions.UPDATE, payload: account });
-        }else{
+        } else {
           this.router.navigate(['account/login']);
         }
       });
@@ -164,27 +164,36 @@ export class PickupPageComponent implements OnInit, OnDestroy {
         //   self.merchants = rs.data;
 
 
-          const delivered = this.getDelivered(deliverDate); // this.getDateRange(this.deliverDate);
-          const driverId = account._id;
-          const qOrder = {
-            // pickupTime,
-            driverId,
-            delivered,
-            status: { $nin: [OrderStatus.BAD, OrderStatus.DELETED, OrderStatus.TEMP] }
-          };
-          this.orderSvc.find(qOrder).pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
-            const orders = data;
-            const qPickup = { delivered, driverId, status: {$nin: [PickupStatus.DELETED] }};
-            this.pickupSvc.find(qPickup).pipe(takeUntil(this.onDestroy$)).subscribe((r: any) => {
-              const pickups = r.data;
-              // const groups = this.groupByMerchants(orders);
-              const productGroups = this.groupByProduct(pickups);
-              this.productGroups = productGroups;
-              this.orders = [...orders];
-              this.pickups = this.getPickupTimeList();
-              resolve(account);
+        const delivered = this.getDelivered(deliverDate); // this.getDateRange(this.deliverDate);
+        const driverId = account._id;
+        const qOrder = {
+          // pickupTime,
+          driverId,
+          delivered,
+          status: { $nin: [OrderStatus.BAD, OrderStatus.DELETED, OrderStatus.TEMP] }
+        };
+        this.orderSvc.find(qOrder).pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
+          const orders = data;
+          const qPickup = { delivered, driverId, status: { $nin: [PickupStatus.DELETED] } };
+          this.pickupSvc.find(qPickup).pipe(takeUntil(this.onDestroy$)).subscribe((r: any) => {
+            const pickups = r.data;
+            // const groups = this.groupByMerchants(orders);
+            const productGroups = this.groupByProduct(pickups);
+            this.productGroups = productGroups;
+            this.productGroups.sort((a, b) => {
+              if (a.productIsRed && !b.productIsRed) {
+                return -1;
+              }
+              if (b.productIsRed && !a.productIsRed) {
+                return 1;
+              }
+              return 0;
             });
+            this.orders = [...orders];
+            this.pickups = this.getPickupTimeList();
+            resolve(account);
           });
+        });
         // });
       } else { // not authorized for opreration merchant
         resolve();
@@ -207,7 +216,7 @@ export class PickupPageComponent implements OnInit, OnDestroy {
         this.orderSvc.find(orderQuery).pipe(takeUntil(this.onDestroy$)).subscribe((data) => {
           const orders = data;
           const delivered = this.getDelivered(this.deliverDate); // this.getDateRange(deliverDate);
-          const qPickup = { delivered, driverId, status: {$nin: [PickupStatus.DELETED]} };
+          const qPickup = { delivered, driverId, status: { $nin: [PickupStatus.DELETED] } };
           this.pickupSvc.find(qPickup).pipe(takeUntil(this.onDestroy$)).subscribe((r: any) => {
             const pickups = r.data;
             const groups = this.groupByMerchants(orders);
@@ -215,6 +224,15 @@ export class PickupPageComponent implements OnInit, OnDestroy {
             this.orders = orders;
             this.groups = groups;
             this.productGroups = productGroups;
+            this.productGroups.sort((a, b) => {
+              if (a.productIsRed && !b.productIsRed) {
+                return -1;
+              }
+              if (b.productIsRed && !a.productIsRed) {
+                return 1;
+              }
+              return 0;
+            });
             resolve({ orders, groups, productGroups });
           });
         });
@@ -366,7 +384,7 @@ export class PickupPageComponent implements OnInit, OnDestroy {
     return row.status === PickupStatus.PICKED_UP;
   }
 
-  isDeleted(row){
+  isDeleted(row) {
     return row.status === PickupStatus.DELETED;
   }
 
