@@ -189,6 +189,13 @@ export class PickupPageComponent implements OnInit, OnDestroy {
               }
               return 0;
             });
+            this.productGroups.sort((a, b) => {
+              if (a.productIsRed && b.productIsRed) {
+                if (a.productName > b.productName) return 1;
+                if (a.productName < b.productName) return -1;
+              }
+              return 0;
+            });
             this.orders = [...orders];
             this.pickups = this.getPickupTimeList();
             resolve(account);
@@ -230,6 +237,14 @@ export class PickupPageComponent implements OnInit, OnDestroy {
               }
               if (b.productIsRed && !a.productIsRed) {
                 return 1;
+              }
+              return 0;
+            });
+
+            this.productGroups.sort((a, b) => {
+              if (a.productIsRed && b.productIsRed) {
+                if (a.productName > b.productName) return 1;
+                if (a.productName < b.productName) return -1;
               }
               return 0;
             });
