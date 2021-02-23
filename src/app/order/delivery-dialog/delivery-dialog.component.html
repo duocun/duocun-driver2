@@ -113,8 +113,8 @@
               {{item.productName}}</div>
             <div class="col-6 product-col" *ngIf="item && item.product.isRed" [ngClass]="getProductCssClass(item)"
               style="color: red; font-weight: 700;">{{item.productName}}</div>
-            <!-- <div class="col-3 quantity-col" [class.emphasise]="item.quantity>1">x{{item.quantity}}</div> -->
-            <div class="col-3 quantity-col">x{{item.quantity}}</div>
+            <div class="col-3 quantity-col" [class.emphasise]="item.quantity>1">x{{item.quantity}}</div>
+            <!-- <div class="col-3 quantity-col">x{{item.quantity}}</div> -->
           </div>
         </div>
       </div>
